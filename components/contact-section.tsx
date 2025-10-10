@@ -175,13 +175,13 @@ export function ContactSection() {
 
             <div className="space-y-4">
               <a
-                href="mailto:hello@photography.com"
+                href="mailto:shanthi.arun@gmail.com"
                 className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/10 border-2 border-secondary/20 hover:border-secondary/40 text-foreground transition-all hover:scale-105 group"
               >
                 <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                   <Mail className="h-6 w-6 text-secondary-foreground" />
                 </div>
-                <span className="font-medium">hello@photography.com</span>
+                <span className="font-medium">shanthi.arun@gmail.com</span>
               </a>
 
               <a

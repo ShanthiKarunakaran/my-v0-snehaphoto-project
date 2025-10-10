@@ -18,12 +18,12 @@ export function AboutSection() {
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               Since I picked up my camera in middle school, I've been on a journey to capture how I see the world
               through my lens—from still life to portraits of family and friends. Feel free to browse through my
-              gallery! I've had so much fun during these photoshoots with my friends, making sure everyone feels relaxed
-              and has a great time so I can capture their best, most genuine selves.
+              gallery!
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              I'm offering photoshoots for senior portraits, headshots, "choose-your-own-theme" portraits, and more! I
-              also sell digital prints — and all proceeds are donated to OneProsper International, a nonprofit
+              I'm offering photoshoots for senior portraits, headshots, "choose-your-own-theme" portraits, and more!
+            </p>
+            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">I also sell digital prints — and all proceeds are donated to OneProsper International, a nonprofit
               organization that funds education, housing, and more for low-income girls in India. I'm an active
               volunteer with this organization, and every donation helps bring another girl's dream to life.
             </p>
