@@ -10,6 +10,7 @@ export function Navigation() {
   const navItems = [
     { name: "Portfolio", href: "#portfolio" },
     { name: "About", href: "#about" },
+    { name: "Artist Statement", href: "https://snehaarunphotographyii.weebly.com/light-and-shadow.html", external: true },
     { name: "Contact", href: "#contact" },
   ]
 
@@ -34,6 +35,8 @@ export function Navigation() {
               <a
                 key={item.name}
                 href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
                 className="text-muted-foreground hover:text-primary transition-colors duration-200 text-sm font-medium"
               >
                 {item.name}
@@ -75,6 +78,8 @@ export function Navigation() {
                 <a
                   key={item.name}
                   href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
                   className="text-muted-foreground hover:text-primary transition-colors duration-200 text-sm font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
