@@ -50,10 +50,13 @@ export function Footer() {
           </div>
 
           {/* Copyright with heart */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>© {new Date().getFullYear()} Photography Portfolio</span>
-            <Heart className="h-4 w-4 text-primary fill-primary" />
-            <span>All proceeds support charitable organization https://www.oneprosper.org  </span>
+          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
+            <div className="flex items-center gap-2">
+              <span>© {new Date().getFullYear()} Photography Portfolio</span>
+              <Heart className="h-4 w-4 text-primary fill-primary" />
+            </div>
+            <span>All proceeds support charitable organization <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">oneprosper.org</a></span>
+            <span>Website designed and developed by Shanthi Karunakaran</span>
           </div>
 
           {/* Fun tagline */}

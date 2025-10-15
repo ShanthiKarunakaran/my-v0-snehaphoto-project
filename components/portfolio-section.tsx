@@ -43,7 +43,7 @@ const portfolioImages = [
   },
   {
     id: 7,
-    src: "/photos/garden-bench.jpg",
+    src: "/photos/garden-bench.jpeg",
     alt: "Garden portrait on bench with roses",
     category: "Lifestyle",
   },

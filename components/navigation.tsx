@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, X, Instagram, Facebook, Mail } from "lucide-react"
+import { Menu, X, Mail } from "lucide-react"
+import { FaFacebook, FaInstagram } from "react-icons/fa";
+
 import { Button } from "@/components/ui/button"
 
 export function Navigation() {
@@ -10,22 +12,23 @@ export function Navigation() {
   const navItems = [
     { name: "Portfolio", href: "#portfolio" },
     { name: "About", href: "#about" },
-    { name: "Artist Statement", href: "https://snehaarunphotographyii.weebly.com/light-and-shadow.html", external: true },
+    { name: "Techniques", href: "/techniques" },
     { name: "Contact", href: "#contact" },
   ]
 
   const socialLinks = [
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Mail, href: "#contact", label: "Email" },
+   
+    { icon: Mail, href: "mailto:shanthi.arun@gmail.com", label: "Email" },
+    { icon: FaFacebook, href: "https://facebook.com", label: "Facebook" },
+    { icon: FaInstagram, href: "https://instagram.com/snehaa.prints", label: "Instagram" }
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/70 backdrop-blur-md border-b border-primary/30 shadow-lg">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="#" className="text-xl font-semibold text-foreground">
+          <a href="#" className="text-xl font-semibold text-white">
             Photography
           </a>
 
@@ -35,9 +38,7 @@ export function Navigation() {
               <a
                 key={item.name}
                 href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noopener noreferrer" : undefined}
-                className="text-muted-foreground hover:text-primary transition-colors duration-200 text-sm font-medium"
+                className="text-white/90 hover:text-primary-foreground transition-colors duration-200 text-sm font-medium"
               >
                 {item.name}
               </a>
@@ -50,7 +51,8 @@ export function Navigation() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="text-muted-foreground hover:text-primary transition-colors duration-200"
+                  target="_blank"
+                  className="text-white/80 hover:text-primary-foreground transition-colors duration-200"
                 >
                   <social.icon className="w-4 h-4" />
                 </a>
@@ -78,9 +80,7 @@ export function Navigation() {
                 <a
                   key={item.name}
                   href={item.href}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  className="text-muted-foreground hover:text-primary transition-colors duration-200 text-sm font-medium"
+                  className="text-white/90 hover:text-white transition-colors duration-200 text-sm font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
@@ -94,7 +94,7 @@ export function Navigation() {
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
-                    className="text-muted-foreground hover:text-primary transition-colors duration-200"
+                    className="text-white/80 hover:text-primary-foreground transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <social.icon className="w-4 h-4" />

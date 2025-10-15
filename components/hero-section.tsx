@@ -73,7 +73,7 @@ export function HeroSection() {
           <Button
             asChild
             size="lg"
-            className="hover:bg-red-700 text-white text-base px-8 rounded-lg shadow-lg shadow-red-900/50 hover:shadow-xl hover:shadow-red-900/60 transition-all group bg-primary"
+            className="hover:bg-primary/80 text-white text-base px-8 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group bg-primary"
           >
             <a href="#portfolio" className="flex items-center gap-2">
               View My Work
@@ -84,7 +84,7 @@ export function HeroSection() {
             asChild
             variant="outline"
             size="lg"
-            className="text-base px-8 rounded-lg border-2 border-zinc-700 hover:bg-zinc-800 hover:border-red-900 text-zinc-300 hover:text-red-400 transition-all bg-zinc-900/50 backdrop-blur-sm"
+            className="text-base px-8 rounded-lg border-2 border-primary/40 hover:bg-primary/10 hover:border-primary text-zinc-300 hover:text-primary-foreground transition-all bg-zinc-900/50 backdrop-blur-sm"
           >
             <a href="#contact">Book a Session</a>
           </Button>

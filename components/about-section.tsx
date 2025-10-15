@@ -1,5 +1,4 @@
-import { Heart, Camera, Users, ExternalLink } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Heart, Camera, Users } from "lucide-react"
 
 export function AboutSection() {
   return (
@@ -31,26 +30,6 @@ export function AboutSection() {
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               Contact me to book a shoot or ask any questions — I'd love to hear from you!
             </p>
-            
-            {/* Artist Statement Link */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="bg-background/50 border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all"
-              >
-                <a 
-                  href="https://snehaarunphotographyii.weebly.com/light-and-shadow.html" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  View My Artist Statement
-                </a>
-              </Button>
-            </div>
           </div>
 
           <div className="space-y-6">
