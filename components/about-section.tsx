@@ -22,19 +22,7 @@ export function AboutSection() {
               through my lens—from still life to portraits of family and friends. 
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-             I've photographed several photoshoots featured in my <a 
-               href="#portfolio?category=Portraits" 
-               onClick={(e) => {
-                 const targetHash = "#portfolio?category=Portraits";
-                 if (window.location.hash === targetHash) {
-                   e.preventDefault(); // Prevent default navigation
-                   const section = document.querySelector("#portfolio");
-                   if (section) {
-                     section.scrollIntoView({ behavior: "smooth" });
-                   }
-                 }
-               }}
-               className="text-primary hover:underline">gallery</a>, where you can see my work and style.
+             I've photographed several photoshoots featured in my <a href="#portfolio?category=Portraits" onClick={() => console.log("Gallery link clicked! Hash before:", window.location.hash)} className="text-primary hover:underline">gallery</a>, where you can see my work and style.
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Services</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
