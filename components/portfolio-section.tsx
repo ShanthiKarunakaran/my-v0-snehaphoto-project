@@ -21,13 +21,13 @@ const portfolioImages = [
     id: 3,
     src: "/photos/duo-sitting.jpg",
     alt: "Duo portrait sitting together",
-    category: "Lifestyle",
+    category: "Portraits",
   },
   {
     id: 4,
     src: "/photos/stairs-outdoor.jpg",
     alt: "Outdoor portrait on stairs",
-    category: "Lifestyle",
+    category: "Portraits",
   },
   {
     id: 5,
@@ -45,7 +45,7 @@ const portfolioImages = [
     id: 7,
     src: "/photos/garden-bench.jpeg",
     alt: "Garden portrait on bench with roses",
-    category: "Lifestyle",
+    category: "Portraits",
   },
   {
     id: 8,
@@ -101,6 +101,48 @@ export function PortfolioSection() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<(typeof portfolioImages)[0] | null>(null)
   const categories = ["All", ...Array.from(new Set(portfolioImages.map((img) => img.category)))]
+
+  console.log("PortfolioSection rendering!") // Add this FIRST
+  useEffect(() => {
+
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if(hash) {
+        //split the hash into sectionID and category using ?
+        const parts = hash.split("?");
+        const sectionID = parts[0];
+        const category = parts[1];
+        console.log("category", category);
+
+        //scroll to the sectionID
+        const section = document.querySelector(sectionID);
+        if(section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+        //extract Portraits from category need the word after = sign
+        if(category) {
+          const categoryArray = category.split("=");
+          
+          if(sectionID === "#portfolio" && category) {
+            setSelectedCategory(categoryArray[1]); //sets the category filter in the portfolio section
+          }
+        }
+      }
+      
+    }
+    
+    handleHashChange()
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+    /*if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }*/
+  }, []); //empty dependency array which means run only once on mount
+
+ 
 
   const filteredImages =
     selectedCategory === "All" ? portfolioImages : portfolioImages.filter((img) => img.category === selectedCategory)
@@ -163,7 +205,11 @@ export function PortfolioSection() {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => {
+                  const newHash = category === "All" ? "#portfolio" : `#portfolio?category=${category}`;
+                  window.location.hash = newHash;
+                  setSelectedCategory(category);
+                }}
                 className={`px-6 py-3 text-sm font-medium rounded-full transition-all hover:scale-105 ${
                   selectedCategory === category
                     ? "bg-primary text-primary-foreground shadow-lg"

@@ -56,7 +56,8 @@ export function Footer() {
               <Heart className="h-4 w-4 text-primary fill-primary" />
             </div>
             <span>All proceeds support charitable organization <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">oneprosper.org</a></span>
-            <span>Website designed and developed by Shanthi Karunakaran</span>
+            <span>Website designed and developed by <a href="https://github.com/ShanthiKarunakaran" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Shanthi Karunakaran</a></span>
+            
           </div>
 
           {/* Fun tagline */}

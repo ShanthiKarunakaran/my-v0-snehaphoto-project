@@ -66,7 +66,7 @@ export function HeroSection() {
         </h1>
 
         <p className="text-lg md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto text-pretty leading-relaxed">
-          Teen photographer turning creative vision into positive change. Every photoshoot supports causes that matter.
+         Turning creative vision into positive change. Every photoshoot supports a cause.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
