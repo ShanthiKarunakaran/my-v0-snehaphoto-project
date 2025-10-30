@@ -22,6 +22,16 @@ export const metadata: Metadata = {
   title: "Teen Photography | Shots for a Cause ✨",
   description: "Fun, creative photography by a teen photographer. Every photoshoot supports amazing causes!",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: "/favicon-32-light.png", sizes: "32x32", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon-32-dark.png", sizes: "32x32", media: "(prefers-color-scheme: dark)" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon-180-light.png", sizes: "180x180", media: "(prefers-color-scheme: light)" },
+      { url: "/apple-touch-icon-180-dark.png", sizes: "180x180", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 }
 
 export default function RootLayout({
