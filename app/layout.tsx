@@ -24,6 +24,8 @@ export const metadata: Metadata = {
   generator: "v0.app",
   icons: {
     icon: [
+      { url: "/favicon-16-light.png", sizes: "16x16", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon-16-dark.png", sizes: "16x16", media: "(prefers-color-scheme: dark)" },
       { url: "/favicon-32-light.png", sizes: "32x32", media: "(prefers-color-scheme: light)" },
       { url: "/favicon-32-dark.png", sizes: "32x32", media: "(prefers-color-scheme: dark)" },
     ],
