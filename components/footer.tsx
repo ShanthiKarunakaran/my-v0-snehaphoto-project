@@ -2,7 +2,7 @@ import { Instagram, Mail, Facebook, Heart } from "lucide-react"
 
 export function Footer() {
   const socialLinks = [
-    { href: "https://instagram.com", icon: Instagram, label: "Instagram" },
+    { href: "https://www.instagram.com/snehaa.prints/", icon: Instagram, label: "Instagram" },
     { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
     { href: "mailto:hello@photography.com", icon: Mail, label: "Email" },
   ]
@@ -49,15 +49,15 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Copyright with heart */}
+          {/* Copyright / Credits */}
           <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
             <div className="flex items-center gap-2">
-              <span>© {new Date().getFullYear()} Photography Portfolio</span>
+              <span>© {new Date().getFullYear()}</span>
+              <span>Website designed and developed by <a href="https://github.com/ShanthiKarunakaran" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Shanthi Karunakaran</a></span>
+              <span>— All rights reserved.</span>
               <Heart className="h-4 w-4 text-primary fill-primary" />
             </div>
             <span>All proceeds support charitable organization <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">oneprosper.org</a></span>
-            <span>Website designed and developed by <a href="https://github.com/ShanthiKarunakaran" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Shanthi Karunakaran</a></span>
-            
           </div>
 
           {/* Fun tagline */}

@@ -153,7 +153,7 @@ export function ContactSection() {
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 shadow-lg hover:shadow-xl transition-all hover:scale-105"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Sending..." : "Send Message ✨"}
+                {isSubmitting ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </div>
