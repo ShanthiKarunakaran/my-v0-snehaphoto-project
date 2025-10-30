@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Sparkles, X } from "lucide-react"
+import type { Image as ImageType } from "@/lib/supabase"
 
 const portfolioImages = [
   {
@@ -98,11 +99,56 @@ const portfolioImages = [
 ]
 
 export function PortfolioSection() {
+  //state declarations
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [selectedImage, setSelectedImage] = useState<(typeof portfolioImages)[0] | null>(null)
+  const [selectedImage, setSelectedImage] = useState<ImageType | null>(null)
   const categories = ["All", ...Array.from(new Set(portfolioImages.map((img) => img.category)))]
 
+  //state to store the images from database
+  const [images, setImages] = useState<ImageType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<{ total: number; totalPages: number } | null>(null);
+  
+  // Function to fetch images from the API
+  const fetchImages = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Build the API URL with query parameters
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '12',
+        ...(selectedCategory && selectedCategory !== 'All' && { category: selectedCategory })
+      });
+
+      const response = await fetch(`/api/images?${params}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch images');
+      }
+
+      // If we're on page 1, replace the images. Otherwise, append them (for pagination)
+      if (page === 1) {
+        setImages(data.images);
+      } else {
+        setImages(prev => [...prev, ...data.images]);
+      }
+      
+      setPagination(data.pagination);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   console.log("PortfolioSection rendering!") // Add this FIRST
+
+  //useEffect hook to handle hash change
   useEffect(() => {
 
     const handleHashChange = () => {
@@ -142,10 +188,18 @@ export function PortfolioSection() {
     }*/
   }, []); //empty dependency array which means run only once on mount
 
- 
+  // useEffect to fetch images when component mounts or category/page changes
+  useEffect(() => {
+    fetchImages();
+  }, [page, selectedCategory]); // Run when page or selectedCategory changes
 
-  const filteredImages =
-    selectedCategory === "All" ? portfolioImages : portfolioImages.filter((img) => img.category === selectedCategory)
+  // Reset page to 1 when category changes
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory]);
+
+  // Note: We'll update filteredImages to use the database images instead of portfolioImages
+  const filteredImages = images; // For now, just use images from database
 
   const handleCloseModal = () => {
     console.log("[v0] Close button clicked")
@@ -231,8 +285,8 @@ export function PortfolioSection() {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <Image
-                  src={image.src || "/placeholder.svg"}
-                  alt={image.alt}
+                  src={image.cloudinary_url || "/placeholder.svg"}
+                  alt={image.alt_text}
                   fill
                   className="object-contain transition-transform duration-500 group-hover:scale-105"
                 />
@@ -270,8 +324,8 @@ export function PortfolioSection() {
             >
               <div className="relative w-full h-full">
                 <Image
-                  src={selectedImage.src || "/placeholder.svg"}
-                  alt={selectedImage.alt}
+                  src={selectedImage.cloudinary_url || "/placeholder.svg"}
+                  alt={selectedImage.alt_text}
                   fill
                   className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
@@ -281,7 +335,7 @@ export function PortfolioSection() {
 
               {/* Image info */}
               <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-black/50 backdrop-blur-sm rounded-lg p-4">
-                <span className="text-white text-sm md:text-base">{selectedImage.alt}</span>
+                <span className="text-white text-sm md:text-base">{selectedImage.alt_text}</span>
                 <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-medium">
                   {selectedImage.category}
                 </span>

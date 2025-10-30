@@ -5,6 +5,7 @@ import { Menu, X, Mail } from "lucide-react"
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button"
+import ThemeToggle from "@/components/ui/theme-toggle"
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -58,6 +59,11 @@ export function Navigation() {
                 </a>
               ))}
             </div>
+
+            {/* Theme Toggle */}
+            <div className="ml-2">
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -100,6 +106,9 @@ export function Navigation() {
                     <social.icon className="w-4 h-4" />
                   </a>
                 ))}
+
+                {/* Theme Toggle (mobile) */}
+                <ThemeToggle />
               </div>
             </div>
           </div>
