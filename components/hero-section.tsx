@@ -6,11 +6,9 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center px-6 lg:px-8 pt-16 overflow-hidden bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
       {/* Red safelight glow effects */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-red-600/25 rounded-full blur-[120px] animate-pulse" />
-      <div
-        className="absolute bottom-20 right-10 w-80 h-80 bg-red-500/20 rounded-full blur-[140px] animate-pulse"
-        style={{ animationDelay: "1s" }}
-      />
+      <div className="absolute top-20 left-10 w-64 h-64 bg-red-600/25 rounded-full blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
+      {/* Moving safelight glow that sweeps across the image */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-red-600/40 rounded-full blur-[140px] animate-[safelight-sweep_8s_ease-in-out_infinite]" />
 
       {/* Clothesline string (curved) */}
       <div className="pointer-events-none absolute left-0 right-0 top-16 z-0 opacity-60">
@@ -69,14 +67,14 @@ export function HeroSection() {
               src="/photos/aboutMe/sneha-silhouette-transparentBg.png"
               alt="Sneha photographing portraits"
               fill
-              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] group-hover:opacity-0 transition-opacity duration-1000 ease-in-out rounded-[50%]"
+              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] group-hover:opacity-0 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-hide_8s_ease-in-out_infinite]"
               priority
             />
             <Image
               src="/photos/aboutMe/sneha.jpeg"
               alt="Sneha photographing portraits"
               fill
-              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in-out rounded-[50%]"
+              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-reveal_8s_ease-in-out_infinite]"
             />
             {/* Artistic oval frame border */}
             <div className="pointer-events-none absolute inset-0 rounded-[50%] border border-red-400/15 group-hover:border-red-300/25 transition-all duration-1000 ease-in-out blur-[0.5px]" />

@@ -212,3 +212,73 @@ html {
     transform: scale(1.15);
   }
 }
+
+/* Moving safelight glow - travels from left to right */
+@keyframes safelight-sweep {
+  0% {
+    transform: translateX(-50%);
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 0.7; /* Peak when over image */
+  }
+  50% {
+    transform: translateX(50%);
+    opacity: 0.5; /* Still visible as it moves past image */
+  }
+  70% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(150%);
+    opacity: 0.1; /* Fades as it moves far right */
+  }
+}
+
+/* Photo reveal - only shows when glow is over image (30-50% of animation) */
+@keyframes safelight-reveal {
+  0%, 25% {
+    opacity: 0; /* Silhouette visible - glow not yet over image */
+  }
+  30% {
+    opacity: 0; /* Glow approaching */
+  }
+  35%, 45% {
+    opacity: 1; /* Photo revealed - glow is over image */
+  }
+  50% {
+    opacity: 0.5; /* Glow moving away */
+  }
+  55%, 100% {
+    opacity: 0; /* Back to silhouette - glow moved far right */
+  }
+}
+
+/* Silhouette hide - opposite of photo reveal */
+@keyframes safelight-hide {
+  0%, 25% {
+    opacity: 1; /* Silhouette visible */
+  }
+  30% {
+    opacity: 1;
+  }
+  35%, 45% {
+    opacity: 0; /* Hidden when glow is over */
+  }
+  50% {
+    opacity: 0.5;
+  }
+  55%, 100% {
+    opacity: 1; /* Back to silhouette */
+  }
+}
+
+/* Custom safelight pulse animation - for background glows */
+@keyframes safelight-pulse {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
