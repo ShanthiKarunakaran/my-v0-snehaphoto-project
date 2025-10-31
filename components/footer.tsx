@@ -31,7 +31,7 @@ export function Footer() {
           </div>
 
           {/* Navigation Links */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 sm:gap-8 flex-wrap justify-center">
             <a
               href="#portfolio"
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
@@ -50,14 +50,21 @@ export function Footer() {
           </div>
 
           {/* Copyright / Credits */}
-          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground text-center px-4 max-w-2xl">
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
               <span>© {new Date().getFullYear()}</span>
+              <span className="hidden sm:inline">—</span>
               <span>Website designed and developed by <a href="https://github.com/ShanthiKarunakaran" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Shanthi Karunakaran</a></span>
-              <span>— All rights reserved.</span>
+              <span className="hidden sm:inline">—</span>
+              <span className="hidden sm:inline">All rights reserved.</span>
               <Heart className="h-4 w-4 text-primary fill-primary" />
             </div>
-            <span>All proceeds support charitable organization <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">oneprosper.org</a></span>
+            <div className="flex flex-wrap items-center justify-center gap-x-1 sm:gap-x-2 gap-y-1">
+              <span className="sm:hidden">All rights reserved. </span>
+              <span className="hidden sm:inline">All proceeds support charitable organization </span>
+              <span className="sm:hidden">Proceeds support </span>
+              <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">oneprosper.org</a>
+            </div>
           </div>
 
           {/* Fun tagline */}

@@ -185,3 +185,30 @@ html {
     transform: translateX(-100%);
   }
 }
+
+/* Spotlight sweep animations for hero image */
+@keyframes spotlight-sweep {
+  0% {
+    opacity: 0.3;
+    transform: translateX(-120%) translateY(-50%) scale(0.8);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(20%) translateY(-50%) scale(1.1);
+  }
+  100% {
+    opacity: 0.3;
+    transform: translateX(140%) translateY(-50%) scale(0.8);
+  }
+}
+
+@keyframes spotlight-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.15);
+  }
+}
