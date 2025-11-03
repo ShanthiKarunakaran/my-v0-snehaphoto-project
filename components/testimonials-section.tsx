@@ -30,7 +30,7 @@ export function TestimonialsSection() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground" style={{ fontFamily: "var(--font-space-grotesk)" }}>
-            Words from Clients
+            Testimonials
           </h2>
           <p className="mt-3 text-muted-foreground text-base md:text-lg">
             Real experiences from real sessions—captured with care and intention.
