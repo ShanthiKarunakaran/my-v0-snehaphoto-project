@@ -1,111 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Image from "next/image"
 import { Sparkles, X } from "lucide-react"
 import type { Image as ImageType } from "@/lib/supabase"
-
-const portfolioImages = [
-  {
-    id: 1,
-    src: "/photos/portrait-black-dress.jpg",
-    alt: "Portrait in black dress against textured wall",
-    category: "Portraits",
-  },
-  {
-    id: 2,
-    src: "/photos/tying-shoes.jpg",
-    alt: "Artistic portrait tying shoes",
-    category: "Portraits",
-  },
-  {
-    id: 3,
-    src: "/photos/duo-sitting.jpg",
-    alt: "Duo portrait sitting together",
-    category: "Portraits",
-  },
-  {
-    id: 4,
-    src: "/photos/stairs-outdoor.jpg",
-    alt: "Outdoor portrait on stairs",
-    category: "Portraits",
-  },
-  {
-    id: 5,
-    src: "/photos/close-up-duo.jpg",
-    alt: "Close-up duo portrait",
-    category: "Portraits",
-  },
-  {
-    id: 6,
-    src: "/photos/balcony-night.jpg",
-    alt: "Night portrait on balcony",
-    category: "Artistic",
-  },
-  {
-    id: 7,
-    src: "/photos/garden-bench.jpeg",
-    alt: "Garden portrait on bench with roses",
-    category: "Portraits",
-  },
-  {
-    id: 8,
-    src: "/photos/prints/green-berries.jpg",
-    alt: "Macro shot of green berries with water droplets",
-    category: "Prints",
-  },
-  {
-    id: 9,
-    src: "/photos/prints/autumn-path.jpeg",
-    alt: "Autumn path with vibrant fall foliage",
-    category: "Prints",
-  },
-  {
-    id: 10,
-    src: "/photos/prints/white-flowers.jpeg",
-    alt: "Delicate white flowers macro",
-    category: "Prints",
-  },
-  {
-    id: 11,
-    src: "/photos/prints/wood-texture.jpeg",
-    alt: "Abstract wood texture with golden tones",
-    category: "Prints",
-  },
-  {
-    id: 12,
-    src: "/photos/prints/succulent.jpg",
-    alt: "Succulent plant with water droplets",
-    category: "Prints",
-  },
-  {
-    id: 13,
-    src: "/photos/prints/makeup-brush.jpeg",
-    alt: "Artistic makeup brush close-up",
-    category: "Prints",
-  },
-  {
-    id: 14,
-    src: "/photos/prints/eggshells.jpeg",
-    alt: "Black and white cracked eggshells",
-    category: "Prints",
-  },
-  {
-    id: 15,
-    src: "/photos/prints/flower-petals.jpeg",
-    alt: "Flower petals with water droplets",
-    category: "Prints",
-  },
-]
 
 export function PortfolioSection() {
   //state declarations
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<ImageType | null>(null)
-  const categories = ["All", ...Array.from(new Set(portfolioImages.map((img) => img.category)))]
 
   //state to store the images from database
   const [images, setImages] = useState<ImageType[]>([]);
+  const [categories, setCategories] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -146,7 +53,6 @@ export function PortfolioSection() {
     }
   };
 
-  console.log("PortfolioSection rendering!") // Add this FIRST
 
   //useEffect hook to handle hash change
   useEffect(() => {
@@ -170,7 +76,9 @@ export function PortfolioSection() {
           const categoryArray = category.split("=");
           
           if(sectionID === "#portfolio" && category) {
-            setSelectedCategory(categoryArray[1]); //sets the category filter in the portfolio section
+            // Decode URL-encoded category name (e.g., "Graduation%20Photos" -> "Graduation Photos")
+            const decodedCategory = decodeURIComponent(categoryArray[1] || '');
+            setSelectedCategory(decodedCategory); //sets the category filter in the portfolio section
           }
         }
       }
@@ -198,11 +106,45 @@ export function PortfolioSection() {
     setPage(1);
   }, [selectedCategory]);
 
-  // Note: We'll update filteredImages to use the database images instead of portfolioImages
-  const filteredImages = images; // For now, just use images from database
+  // Track if categories have been fetched to prevent duplicate fetches
+  const categoriesFetchedRef = useRef(false)
+  
+  // Fetch all unique categories from database (independent of filtered images)
+  useEffect(() => {
+    if (categoriesFetchedRef.current) return // Already fetched
+    categoriesFetchedRef.current = true
+    
+    let isMounted = true
+    
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        if (!isMounted) return // Don't update if component unmounted
+        
+        if (response.ok && data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+          const newCategories = ["All", ...data.categories]
+          setCategories(newCategories)
+        } else {
+          console.error('Failed to fetch categories - invalid response:', data)
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err)
+        categoriesFetchedRef.current = false // Reset on error so we can retry
+      }
+    }
+    
+    fetchCategories()
+    
+    return () => {
+      isMounted = false
+    }
+  }, []) // Only fetch once on mount
+
+  // Use images directly from database
+  const filteredImages = images
 
   const handleCloseModal = () => {
-    console.log("[v0] Close button clicked")
     setSelectedImage(null)
   }
 
@@ -239,7 +181,7 @@ export function PortfolioSection() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 mb-4">
               <Sparkles className="h-4 w-4" />
               <span className="text-sm font-medium">My Work</span>
             </div>
@@ -256,23 +198,32 @@ export function PortfolioSection() {
 
           {/* Category Filter */}
           <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => {
-                  const newHash = category === "All" ? "#portfolio" : `#portfolio?category=${category}`;
-                  window.location.hash = newHash;
-                  setSelectedCategory(category);
-                }}
-                className={`px-6 py-3 text-sm font-medium rounded-full transition-all hover:scale-105 ${
-                  selectedCategory === category
-                    ? "bg-primary text-primary-foreground shadow-lg"
-                    : "bg-card text-card-foreground hover:bg-muted border-2 border-border"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+            {categories.map((category) => {
+              // Format category name for display (add spaces before capital letters)
+              const displayName = category === "All" 
+                ? "All" 
+                : category.replace(/([A-Z])/g, " $1").trim()
+              
+              return (
+                <button
+                  key={category}
+                  onClick={() => {
+                    const newHash = category === "All" 
+                      ? "#portfolio" 
+                      : `#portfolio?category=${encodeURIComponent(category)}`;
+                    window.location.hash = newHash;
+                    setSelectedCategory(category);
+                  }}
+                  className={`px-6 py-3 text-sm font-medium rounded-full transition-all hover:scale-105 ${
+                    selectedCategory === category
+                      ? "bg-primary text-primary-foreground shadow-lg"
+                      : "bg-card text-card-foreground hover:bg-muted border-2 border-border"
+                  }`}
+                >
+                  {displayName}
+                </button>
+              )
+            })}
           </div>
 
           {/* Image Grid */}
@@ -289,6 +240,7 @@ export function PortfolioSection() {
                   alt={image.alt_text}
                   fill
                   className="object-contain transition-transform duration-500 group-hover:scale-105"
+                  unoptimized={image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in')}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
@@ -299,6 +251,66 @@ export function PortfolioSection() {
               </div>
             ))}
           </div>
+
+          {/* Pagination UI */}
+          {pagination && (
+            <div className="mt-12 space-y-6">
+              {/* Load More Button - Only show if there are more pages and more images to load */}
+              {pagination.totalPages > page && filteredImages.length < pagination.total ? (
+                <div className="text-center">
+                  <button
+                    onClick={() => setPage((prev) => prev + 1)}
+                    disabled={isLoading}
+                    className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center gap-2">
+                        <span className="animate-spin">⏳</span>
+                        Loading...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        Load More
+                        <span className="text-sm opacity-80">
+                          ({pagination.total - filteredImages.length} remaining)
+                        </span>
+                      </span>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                // All images loaded message - only show if we have images
+                filteredImages.length > 0 && (
+                  <div className="text-center">
+                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20">
+                      <span>✓</span>
+                      <span>All {filteredImages.length} images displayed</span>
+                    </div>
+                  </div>
+                )
+              )}
+
+              {/* Pagination Info */}
+              <div className="text-center space-y-1">
+                <div className="text-sm text-muted-foreground">
+                  Showing <span className="font-medium text-foreground">{filteredImages.length}</span> of{' '}
+                  <span className="font-medium text-foreground">{pagination.total}</span> images
+                </div>
+                {pagination.totalPages > 1 && pagination.totalPages > page && (
+                  <div className="text-xs text-muted-foreground">
+                    Page {page} of {pagination.totalPages}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Error display */}
+          {error && (
+            <div className="mt-6 text-center text-destructive text-sm">
+              Error: {error}
+            </div>
+          )}
         </div>
       </section>
 
@@ -330,6 +342,7 @@ export function PortfolioSection() {
                   className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
                   priority
+                  unoptimized={selectedImage.cloudinary_url?.includes('supabase.co') || selectedImage.cloudinary_url?.includes('supabase.in')}
                 />
               </div>
 

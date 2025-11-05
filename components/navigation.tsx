@@ -67,16 +67,33 @@ export function Navigation() {
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </Button>
+          {/* Mobile Social Icons, Theme Toggle & Menu Button */}
+          <div className="md:hidden flex items-center gap-4 relative z-10">
+            {socialLinks.map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                aria-label={social.label}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/80 hover:text-primary-foreground transition-colors duration-200 relative z-10"
+              >
+                <social.icon className="w-4 h-4" />
+              </a>
+            ))}
+            <div className="relative z-10">
+              <ThemeToggle />
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative z-10"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -93,24 +110,6 @@ export function Navigation() {
                   {item.name}
                 </a>
               ))}
-
-              {/* Mobile Social Icons */}
-              <div className="flex items-center gap-4 pt-4 border-t border-border">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="text-white/80 hover:text-primary-foreground transition-colors duration-200"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <social.icon className="w-4 h-4" />
-                  </a>
-                ))}
-
-                {/* Theme Toggle (mobile) */}
-                <ThemeToggle />
-              </div>
             </div>
           </div>
         )}

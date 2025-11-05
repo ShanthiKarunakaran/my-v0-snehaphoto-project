@@ -4,7 +4,7 @@ import Image from "next/image"
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center px-6 lg:px-8 pt-16 overflow-hidden bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
+    <section className="relative min-h-[30vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
       {/* Red safelight glow effects */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-red-600/25 rounded-full blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
       {/* Moving safelight glow that sweeps across the image */}

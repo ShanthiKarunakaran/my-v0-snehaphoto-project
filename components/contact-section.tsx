@@ -120,7 +120,7 @@ export function ContactSection() {
                 </label>
                 <Textarea
                   id="message"
-                  placeholder="Tell me about your photoshoot needs..."
+                  placeholder="Tell me about your photoshoot needs...or any questions regarding buying Digital Prints..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
@@ -201,7 +201,7 @@ export function ContactSection() {
               <div className="flex items-start gap-4 p-4 rounded-2xl bg-accent/10">
                 <Camera className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Available for bookings throughout the week. Response time is typically within 24 hours!
+                  Response time is typically within 24 hours!
                 </p>
               </div>
             </div>

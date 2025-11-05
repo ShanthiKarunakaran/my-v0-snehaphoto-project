@@ -1,0 +1,406 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Upload, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon } from "lucide-react"
+
+interface UploadedFile {
+  file: File
+  url: string
+  width: number | null
+  height: number | null
+  file_size: number
+  altText: string
+}
+
+export default function AdminPage() {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [category, setCategory] = useState("Portraits")
+  const [folder, setFolder] = useState("photos")
+  const [isUploading, setIsUploading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
+  const [status, setStatus] = useState<{ type: "success" | "error" | null; message: string }>({
+    type: null,
+    message: "",
+  })
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
+      setSelectedFiles(files)
+      setUploadedFiles([])
+      setUploadProgress({})
+    }
+  }
+
+  const handleBulkUpload = async () => {
+    if (selectedFiles.length === 0) {
+      setStatus({ type: "error", message: "Please select files first" })
+      return
+    }
+
+    setIsUploading(true)
+    setStatus({ type: null, message: "" })
+    setUploadedFiles([])
+    setUploadProgress({})
+
+    const uploaded: UploadedFile[] = []
+
+    try {
+      // Upload files sequentially to avoid overwhelming the server
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i]
+        const fileKey = `${file.name}-${i}`
+
+        setUploadProgress((prev) => ({
+          ...prev,
+          [fileKey]: 0,
+        }))
+
+        const formData = new FormData()
+        formData.append("file", file)
+        formData.append("folder", folder)
+
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+
+        const data = await response.json()
+
+        if (response.ok) {
+          // Generate alt text from filename
+          const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ")
+          const altText = nameWithoutExt.charAt(0).toUpperCase() + nameWithoutExt.slice(1)
+
+          uploaded.push({
+            file,
+            url: data.url,
+            width: data.width,
+            height: data.height,
+            file_size: data.file_size || file.size,
+            altText,
+          })
+
+          setUploadProgress((prev) => ({
+            ...prev,
+            [fileKey]: 100,
+          }))
+        } else {
+          setStatus({
+            type: "error",
+            message: `Failed to upload ${file.name}: ${data.error}`,
+          })
+        }
+      }
+
+      setUploadedFiles(uploaded)
+      setStatus({
+        type: "success",
+        message: `Successfully uploaded ${uploaded.length} of ${selectedFiles.length} files!`,
+      })
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "Failed to connect to server. Please try again.",
+      })
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleBulkSubmit = async () => {
+    if (uploadedFiles.length === 0) {
+      setStatus({
+        type: "error",
+        message: "Please upload files to storage first",
+      })
+      return
+    }
+
+    if (!category) {
+      setStatus({
+        type: "error",
+        message: "Please select a category",
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+    setStatus({ type: null, message: "" })
+
+    try {
+      // Submit all files to database
+      const promises = uploadedFiles.map((uploadedFile) =>
+        fetch("/api/images", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            filename: uploadedFile.file.name,
+            alt_text: uploadedFile.altText,
+            category: category,
+            storage_url: uploadedFile.url,
+            width: uploadedFile.width || 0,
+            height: uploadedFile.height || 0,
+            file_size: uploadedFile.file_size || 0,
+          }),
+        })
+      )
+
+      const results = await Promise.all(promises)
+      const successful = results.filter((r) => r.ok).length
+      const failed = results.length - successful
+
+      if (successful > 0) {
+        setStatus({
+          type: "success",
+          message: `Successfully added ${successful} image${successful > 1 ? "s" : ""} to database${failed > 0 ? ` (${failed} failed)` : ""}!`,
+        })
+        // Reset form
+        setSelectedFiles([])
+        setUploadedFiles([])
+        setCategory("Portraits")
+        setFolder("photos")
+        setUploadProgress({})
+        const fileInput = document.getElementById("file-input") as HTMLInputElement
+        if (fileInput) fileInput.value = ""
+      } else {
+        setStatus({
+          type: "error",
+          message: "Failed to add images to database",
+        })
+      }
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "Failed to connect to server. Please try again.",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-zinc-950/30 py-20 px-6">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
+          <h1 className="text-3xl font-bold mb-2">Bulk Upload Images</h1>
+          <p className="text-muted-foreground mb-8">
+            Upload multiple images to Supabase Storage and add them to your portfolio database.
+          </p>
+
+          <div className="space-y-6">
+            {/* File Input - Multiple */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Select Image Files (Multiple)
+                <span className="text-destructive ml-1">*</span>
+              </label>
+              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="file-input"
+                  className="cursor-pointer flex flex-col items-center gap-2"
+                >
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    {selectedFiles.length > 0
+                      ? `${selectedFiles.length} file${selectedFiles.length > 1 ? "s" : ""} selected`
+                      : "Click to select multiple images"}
+                  </span>
+                  {selectedFiles.length > 0 && (
+                    <div className="mt-2 text-xs text-muted-foreground space-y-1 max-h-32 overflow-y-auto">
+                      {selectedFiles.map((file, i) => (
+                        <div key={i} className="text-left">
+                          {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            {/* Folder Selection */}
+            <div>
+              <label htmlFor="folder" className="block text-sm font-medium mb-2">
+                Storage Folder
+              </label>
+              <Input
+                id="folder"
+                type="text"
+                value={folder}
+                onChange={(e) => setFolder(e.target.value)}
+                placeholder="photos"
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Folder path in Supabase Storage (e.g., photos, photos/Animals, photos/Headshots)
+              </p>
+            </div>
+
+            {/* Upload Progress */}
+            {Object.keys(uploadProgress).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Upload Progress:</p>
+                {selectedFiles.map((file, i) => {
+                  const fileKey = `${file.name}-${i}`
+                  const progress = uploadProgress[fileKey] || 0
+                  return (
+                    <div key={i} className="space-y-1">
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{file.name}</span>
+                        <span>{progress}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div
+                          className="bg-primary h-2 rounded-full transition-all"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Uploaded Files Preview */}
+            {uploadedFiles.length > 0 && (
+              <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <p className="text-sm text-green-400 mb-3">
+                  ✓ {uploadedFiles.length} file{uploadedFiles.length > 1 ? "s" : ""} uploaded successfully!
+                </p>
+                <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                  {uploadedFiles.map((uploadedFile, i) => (
+                    <div key={i} className="relative">
+                      <img
+                        src={uploadedFile.url}
+                        alt={uploadedFile.altText}
+                        className="w-full h-24 object-cover rounded"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Upload Button */}
+            <Button
+              type="button"
+              onClick={handleBulkUpload}
+              disabled={isUploading || selectedFiles.length === 0}
+              variant="outline"
+              className="w-full"
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading {selectedFiles.length} file{selectedFiles.length > 1 ? "s" : ""}...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload {selectedFiles.length > 0 ? `${selectedFiles.length} ` : ""}File{selectedFiles.length !== 1 ? "s" : ""} to Storage
+                </>
+              )}
+            </Button>
+
+            {/* Category */}
+            <div>
+              <label htmlFor="category" className="block text-sm font-medium mb-2">
+                Category
+                <span className="text-destructive ml-1">*</span>
+              </label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                required
+              >
+                <option value="Portraits">Portraits</option>
+                <option value="Artistic">Artistic</option>
+                <option value="Prints">Prints</option>
+                <option value="Animals">Animals</option>
+                <option value="Headshots">Headshots</option>
+                <option value="GraduationPhotos">Graduation Photos</option>
+              </select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Or type a custom category name below
+              </p>
+              <Input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Custom category"
+                className="mt-2"
+              />
+            </div>
+
+            {/* Status Message */}
+            {status.type && (
+              <div
+                className={`flex items-center gap-2 p-4 rounded-lg ${
+                  status.type === "success"
+                    ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                    : "bg-destructive/10 text-destructive border border-destructive/20"
+                }`}
+              >
+                {status.type === "success" ? (
+                  <CheckCircle2 className="h-5 w-5" />
+                ) : (
+                  <AlertCircle className="h-5 w-5" />
+                )}
+                <p className="text-sm">{status.message}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <Button
+              type="button"
+              onClick={handleBulkSubmit}
+              disabled={isSubmitting || uploadedFiles.length === 0}
+              className="w-full"
+              size="lg"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding {uploadedFiles.length} image{uploadedFiles.length > 1 ? "s" : ""} to database...
+                </>
+              ) : (
+                <>
+                  <ImageIcon className="mr-2 h-4 w-4" />
+                  Add {uploadedFiles.length > 0 ? `${uploadedFiles.length} ` : ""}Image{uploadedFiles.length !== 1 ? "s" : ""} to Database
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Instructions */}
+          <div className="mt-8 p-4 bg-muted/50 rounded-lg">
+            <h3 className="font-semibold mb-2">Setup Instructions:</h3>
+            <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+              <li>Go to Supabase Dashboard → Storage</li>
+              <li>Create a new bucket named <code className="bg-muted px-1 py-0.5 rounded">images</code></li>
+              <li>Make the bucket public (or configure RLS policies)</li>
+              <li>Add <code className="bg-muted px-1 py-0.5 rounded">SUPABASE_SERVICE_ROLE_KEY</code> to your <code className="bg-muted px-1 py-0.5 rounded">.env.local</code></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
