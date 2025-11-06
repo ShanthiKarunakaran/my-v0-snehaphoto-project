@@ -31,23 +31,46 @@ export function PortfolioSection() {
         ...(selectedCategory && selectedCategory !== 'All' && { category: selectedCategory })
       });
 
+      console.log('Fetching images with params:', params.toString());
       const response = await fetch(`/api/images?${params}`);
       const data = await response.json();
+      
+      console.log('Images API response:', { 
+        ok: response.ok, 
+        status: response.status,
+        imageCount: data.images?.length || 0,
+        total: data.pagination?.total || 0,
+        error: data.error || null
+      });
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch images');
+        const errorMsg = data.error || data.details || 'Failed to fetch images';
+        console.error('Images API error:', errorMsg, data);
+        throw new Error(errorMsg);
       }
+
+      // Ensure images is an array (handle null/undefined)
+      const imagesArray = Array.isArray(data.images) ? data.images : [];
+      
+      console.log('Setting images:', imagesArray.length, 'images');
 
       // If we're on page 1, replace the images. Otherwise, append them (for pagination)
       if (page === 1) {
-        setImages(data.images);
+        setImages(imagesArray);
       } else {
-        setImages(prev => [...prev, ...data.images]);
+        setImages(prev => [...prev, ...imagesArray]);
       }
       
-      setPagination(data.pagination);
+      setPagination(data.pagination || {
+        page: 1,
+        limit: 12,
+        total: 0,
+        totalPages: 0
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Error fetching images:', err);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -118,18 +141,27 @@ export function PortfolioSection() {
     
     const fetchCategories = async () => {
       try {
+        console.log('Fetching categories...')
         const response = await fetch('/api/categories')
         const data = await response.json()
+        console.log('Categories API response:', { ok: response.ok, status: response.status, data })
+        
         if (!isMounted) return // Don't update if component unmounted
         
-        if (response.ok && data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
-          const newCategories = ["All", ...data.categories]
+        if (response.ok && data.categories && Array.isArray(data.categories)) {
+          // Always set categories, even if empty array (will show just "All")
+          const newCategories = data.categories.length > 0 ? ["All", ...data.categories] : ["All"]
+          console.log('Setting categories:', newCategories)
           setCategories(newCategories)
         } else {
           console.error('Failed to fetch categories - invalid response:', data)
+          // Set default categories on error
+          setCategories(["All"])
         }
       } catch (err) {
         console.error('Failed to fetch categories:', err)
+        // Set default categories on error
+        setCategories(["All"])
         categoriesFetchedRef.current = false // Reset on error so we can retry
       }
     }
@@ -233,15 +265,31 @@ export function PortfolioSection() {
                 key={image.id}
                 onClick={() => setSelectedImage(image)}
                 className="group relative min-h-[400px] overflow-hidden rounded-2xl bg-zinc-900 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ animationDelay: `${index * 0.1}s`, position: 'relative' }}
               >
-                <Image
-                  src={image.cloudinary_url || "/placeholder.svg"}
-                  alt={image.alt_text}
-                  fill
-                  className="object-contain transition-transform duration-500 group-hover:scale-105"
-                  unoptimized={image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in')}
-                />
+                {image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in') ? (
+                  // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
+                  <img
+                    src={image.cloudinary_url}
+                    alt={image.alt_text}
+                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder.svg";
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={image.cloudinary_url || "/placeholder.svg"}
+                    alt={image.alt_text}
+                    fill
+                    className="object-contain transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={!image.cloudinary_url?.startsWith('http')}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                   <span className="inline-block px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-medium">
@@ -335,15 +383,29 @@ export function PortfolioSection() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative w-full h-full">
-                <Image
-                  src={selectedImage.cloudinary_url || "/placeholder.svg"}
-                  alt={selectedImage.alt_text}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
-                  priority
-                  unoptimized={selectedImage.cloudinary_url?.includes('supabase.co') || selectedImage.cloudinary_url?.includes('supabase.in')}
-                />
+                {selectedImage.cloudinary_url?.includes('supabase.co') || selectedImage.cloudinary_url?.includes('supabase.in') ? (
+                  // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
+                  <img
+                    src={selectedImage.cloudinary_url}
+                    alt={selectedImage.alt_text}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder.svg";
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={selectedImage.cloudinary_url || "/placeholder.svg"}
+                    alt={selectedImage.alt_text}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
+                    priority
+                    unoptimized={!selectedImage.cloudinary_url?.startsWith('http')}
+                  />
+                )}
               </div>
 
               {/* Image info */}

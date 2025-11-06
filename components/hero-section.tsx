@@ -21,20 +21,20 @@ export function HeroSection() {
       <div className="absolute top-20 left-0 right-0 flex justify-center gap-8 opacity-60 z-20">
         <div className="relative group">
           <div className="w-2 h-8 bg-zinc-700 rounded-full" /> {/* Clothespin */}
-          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-500 mt-2 overflow-hidden">
-            <Image src="/photos/portrait-black-dress.jpg" alt="Hanging photo" fill className="object-contain" />
+          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-500 mt-2 overflow-hidden relative">
+            <Image src="/photos/Portraits/portrait-black-dress.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
           </div>
         </div>
         <div className="relative group hidden md:block">
           <div className="w-2 h-8 bg-zinc-700 rounded-full" />
-          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[5deg] hover:rotate-[2deg] transition-transform duration-500 mt-2 overflow-hidden">
-            <Image src="/photos/garden-bench.jpeg" alt="Hanging photo" fill className="object-contain" />
+          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[5deg] hover:rotate-[2deg] transition-transform duration-500 mt-2 overflow-hidden relative">
+            <Image src="/photos/Portraits/garden-bench.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
           </div>
         </div>
         <div className="relative group hidden lg:block">
           <div className="w-2 h-8 bg-zinc-700 rounded-full" />
-          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-3deg] hover:rotate-[0deg] transition-transform duration-500 mt-2 overflow-hidden">
-            <Image src="/photos/stairs-outdoor.jpg" alt="Hanging photo" fill className="object-contain" />
+          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-3deg] hover:rotate-[0deg] transition-transform duration-500 mt-2 overflow-hidden relative">
+            <Image src="/photos/Portraits/stairs-outdoor.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
           </div>
         </div>
       </div>
@@ -67,6 +67,7 @@ export function HeroSection() {
               src="/photos/aboutMe/sneha-silhouette-transparentBg.png"
               alt="Sneha photographing portraits"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 460px"
               className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] group-hover:opacity-0 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-hide_8s_ease-in-out_infinite]"
               priority
             />
@@ -74,6 +75,7 @@ export function HeroSection() {
               src="/photos/aboutMe/sneha.jpeg"
               alt="Sneha photographing portraits"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 460px"
               className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-reveal_8s_ease-in-out_infinite]"
             />
             {/* Artistic oval frame border */}
