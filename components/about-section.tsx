@@ -28,6 +28,7 @@ export function AboutSection() {
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               I'm offering photoshoots for senior portraits, headshots, "choose-your-own-theme" portraits, and more!
             </p>
+            <h3 className="text-2xl font-bold text-foreground mb-6">My Mission</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">I also sell digital prints — and all proceeds are donated to <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper International</a>, a nonprofit
               organization that funds education, housing, and more for low-income girls in India. I'm an active
               volunteer with this organization, and every donation helps bring another girl's dream to life.

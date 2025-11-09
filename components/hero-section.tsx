@@ -111,7 +111,16 @@ export function HeroSection() {
             </div>
 
             <p className="text-xl md:text-2xl text-zinc-300 mb-10 max-w-2xl leading-relaxed">
-              Turning creative vision into positive change. Every photoshoot supports a cause.
+              Turning creative vision into positive change. Every photoshoot supports a cause – funds{" "}
+              <a
+                href="https://www.oneprosper.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-red-300 hover:text-red-200 hover:underline transition-colors"
+              >
+                OneProsper’s
+              </a>{" "}
+              education projects.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -121,7 +130,7 @@ export function HeroSection() {
                 className="bg-primary hover:bg-primary/80 text-primary-foreground text-base px-8 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group"
               >
                 <a href="#portfolio" className="flex items-center gap-2">
-                  View My Work
+                  Buy a Digital Print
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </a>
               </Button>

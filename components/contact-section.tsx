@@ -2,17 +2,20 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, Instagram, Camera, CheckCircle2, AlertCircle, Sparkles } from "lucide-react"
 import { sendContactEmail } from "@/app/actions/contact"
+import { cn } from "@/lib/utils"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    printDetails: "",
+    donationAmount: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -20,6 +23,9 @@ export function ContactSection() {
     type: "success" | "error" | null
     message: string
   }>({ type: null, message: "" })
+  const [highlightForm, setHighlightForm] = useState(false)
+  const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hasAppliedPrefillRef = useRef(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,7 +33,18 @@ export function ContactSection() {
     setSubmitStatus({ type: null, message: "" })
 
     try {
-      const result = await sendContactEmail(formData)
+      const composedMessage = [
+        `Print details: ${formData.printDetails || "Not specified"}`,
+        `Donation amount: ${formData.donationAmount || "Not specified"}`,
+        "",
+        formData.message,
+      ].join("\n")
+
+      const result = await sendContactEmail({
+        name: formData.name,
+        email: formData.email,
+        message: composedMessage,
+      })
 
       if (result.success) {
         setSubmitStatus({
@@ -35,7 +52,7 @@ export function ContactSection() {
           message: "Thank you for your message! I'll get back to you soon.",
         })
         // Reset form
-        setFormData({ name: "", email: "", message: "" })
+        setFormData({ name: "", email: "", printDetails: "", donationAmount: "", message: "" })
       } else {
         setSubmitStatus({
           type: "error",
@@ -51,6 +68,54 @@ export function ContactSection() {
       setIsSubmitting(false)
     }
   }
+
+  useEffect(() => {
+    const applyPrefillFromHash = () => {
+      if (typeof window === "undefined") return
+      const hash = window.location.hash
+      if (!hash.startsWith("#contact")) return
+
+      const [, searchPart] = hash.split("?")
+      if (!searchPart) {
+        // No params, just highlight the form so users know they arrived
+        setHighlightForm(true)
+        if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current)
+        highlightTimeoutRef.current = setTimeout(() => setHighlightForm(false), 1500)
+        return
+      }
+
+      const params = new URLSearchParams(searchPart)
+      const printParam = params.get("print")
+      const typeParam = params.get("type")
+      const donationParam = params.get("donation")
+
+      // Only apply once per unique param set to avoid overwriting user edits
+      const key = `${printParam ?? ""}|${typeParam ?? ""}|${donationParam ?? ""}`
+      if (hasAppliedPrefillRef.current && !printParam && !donationParam && !typeParam) return
+
+      setFormData((prev) => ({
+        ...prev,
+        printDetails: printParam ? decodeURIComponent(printParam) : prev.printDetails,
+        donationAmount: donationParam ? decodeURIComponent(donationParam) : prev.donationAmount,
+        message:
+          typeParam === "digital-print" && !prev.message
+            ? "Hi Sneha! I’d love to purchase this digital print."
+            : prev.message,
+      }))
+
+      hasAppliedPrefillRef.current = true
+      setHighlightForm(true)
+      if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current)
+      highlightTimeoutRef.current = setTimeout(() => setHighlightForm(false), 1800)
+    }
+
+    applyPrefillFromHash()
+    window.addEventListener("hashchange", applyPrefillFromHash)
+    return () => {
+      window.removeEventListener("hashchange", applyPrefillFromHash)
+      if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current)
+    }
+  }, [])
 
   return (
     <section
@@ -79,12 +144,32 @@ export function ContactSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
+          {/* Quick instructions for print requests */}
+          <div className="md:hidden bg-card/40 border-2 border-border/60 rounded-3xl p-6 space-y-3 shadow-sm">
+            <h3
+              className="text-xl font-semibold text-foreground"
+              style={{ fontFamily: "var(--font-space-grotesk)" }}
+            >
+              How to order a digital print
+            </h3>
+            <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside leading-relaxed">
+              <li>Tap “Select images to download” in the gallery and choose the photos you want.</li>
+              <li>Use <span className="font-semibold text-primary">“Review selection & download”</span> to open the download panel.</li>
+              <li>Donate via PayPal and use the download buttons to grab the high-resolution files instantly.</li>
+            </ol>
+          </div>
+
           {/* Contact Form */}
-          <div className="bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl">
+          <div
+            className={cn(
+              "bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl transition-all duration-700",
+              highlightForm && "ring-4 ring-offset-4 ring-offset-background ring-primary/60 shadow-[0_0_0_12px_rgba(244,63,94,0.08)]"
+            )}
+          >
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-bold text-foreground mb-2">
-                  Name
+                  Your Name
                 </label>
                 <Input
                   id="name"
@@ -100,7 +185,7 @@ export function ContactSection() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-bold text-foreground mb-2">
-                  Email
+                  Your Email
                 </label>
                 <Input
                   id="email"
@@ -115,12 +200,57 @@ export function ContactSection() {
               </div>
 
               <div>
+                <label htmlFor="print-details" className="block text-sm font-bold text-foreground mb-2">
+                  Are you interested in a digital print or photoshoot?
+                </label>
+                <Input
+                  id="print-details"
+                  type="text"
+                  placeholder="e.g. Digital Print or Photoshoot – Senior portraits"
+                  value={formData.printDetails}
+                  onChange={(e) => setFormData({ ...formData, printDetails: e.target.value })}
+                  className="bg-background border-2 rounded-xl"
+                  disabled={isSubmitting}
+                />
+                {/* <p className="text-xs text-muted-foreground mt-2">
+                  Mention the exact print (name/link) or describe the type of photoshoot you’re looking for.
+                </p> */}
+              </div>
+
+              <div>
+                <label htmlFor="donation-amount" className="block text-sm font-bold text-foreground mb-2">
+                  Donation amount (PayPal)
+                </label>
+                <Input
+                  id="donation-amount"
+                  type="text"
+                  placeholder="e.g. $35"
+                  value={formData.donationAmount}
+                  onChange={(e) => setFormData({ ...formData, donationAmount: e.target.value })}
+                  className="bg-background border-2 rounded-xl"
+                  disabled={isSubmitting}
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Donations are processed through PayPal at{" "}
+                  <a
+                    href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    paypal.me/ShanthiKarunakaran
+                  </a>
+                  .
+                </p>
+              </div>
+
+              <div>
                 <label htmlFor="message" className="block text-sm font-bold text-foreground mb-2">
                   Message
                 </label>
                 <Textarea
                   id="message"
-                  placeholder="Tell me about your photoshoot needs...or any questions regarding buying Digital Prints..."
+                  placeholder="Tell me anything else you'd like me to know about your photoshoot or digital print order..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
@@ -204,6 +334,29 @@ export function ContactSection() {
                   Response time is typically within 24 hours!
                 </p>
               </div>
+            </div>
+
+            <div className="hidden md:block p-6 rounded-3xl bg-card/40 border-2 border-border/60 space-y-3">
+              <h4 className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+                How to order a digital print
+              </h4>
+              <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside leading-relaxed">
+                <li>Tap “Select images to download” in the gallery and choose the photos you want.</li>
+                <li>Use <span className="font-semibold text-primary">“Review selection & download”</span> to open the download panel.</li>
+                <li>Donate via PayPal and use the download buttons to grab the high-resolution files instantly.</li>
+                <li>
+                  Donations are collected via PayPal:&nbsp;
+                  <a
+                    href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    paypal.me/ShanthiKarunakaran
+                  </a>
+                  .
+                </li>
+              </ul>
             </div>
           </div>
         </div>

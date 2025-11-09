@@ -142,7 +142,7 @@ export default function AdminPage() {
           },
           body: JSON.stringify({
             filename: uploadedFile.file.name,
-            alt_text: uploadedFile.altText,
+            alt_text: uploadedFile.altText || uploadedFile.file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
             category: category,
             storage_url: uploadedFile.url,
             width: uploadedFile.width || 0,
@@ -152,14 +152,39 @@ export default function AdminPage() {
         })
       )
 
-      const results = await Promise.all(promises)
-      const successful = results.filter((r) => r.ok).length
+      const results = await Promise.allSettled(promises)
+      const errors: any[] = []
+      let successful = 0
+      
+      // Process results and collect errors
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i]
+        if (result.status === 'fulfilled') {
+          const response = result.value
+          if (response.ok) {
+            successful++
+          } else {
+            try {
+              const errorData = await response.json()
+              console.error(`Failed to add image ${i + 1} (${uploadedFiles[i].file.name}):`, errorData)
+              errors.push(errorData)
+            } catch (e) {
+              console.error(`Failed to add image ${i + 1}:`, response.statusText)
+              errors.push({ error: response.statusText })
+            }
+          }
+        } else {
+          console.error(`Promise rejected for image ${i + 1}:`, result.reason)
+          errors.push({ error: result.reason?.message || String(result.reason) })
+        }
+      }
+      
       const failed = results.length - successful
 
       if (successful > 0) {
         setStatus({
           type: "success",
-          message: `Successfully added ${successful} image${successful > 1 ? "s" : ""} to database${failed > 0 ? ` (${failed} failed)` : ""}!`,
+          message: `Successfully added ${successful} image${successful > 1 ? "s" : ""} to database${failed > 0 ? ` (${failed} failed - check console for details)` : ""}!`,
         })
         // Reset form
         setSelectedFiles([])
@@ -170,10 +195,21 @@ export default function AdminPage() {
         const fileInput = document.getElementById("file-input") as HTMLInputElement
         if (fileInput) fileInput.value = ""
       } else {
+        // Get first error message for display
+        let errorMessage = "Failed to add images to database"
+        if (errors.length > 0) {
+          const firstError = errors[0]
+          if (firstError?.error) {
+            errorMessage = `Failed: ${firstError.error}`
+          } else if (typeof firstError === 'string') {
+            errorMessage = `Failed: ${firstError}`
+          }
+        }
         setStatus({
           type: "error",
-          message: "Failed to add images to database",
+          message: errorMessage,
         })
+        console.error('All images failed to add. Full errors:', errors)
       }
     } catch (error) {
       setStatus({
@@ -386,6 +422,172 @@ export default function AdminPage() {
                 </>
               )}
             </Button>
+          </div>
+
+          {/* Add Local Images Section */}
+          <div className="mt-12 p-6 border-t border-border">
+            <h2 className="text-2xl font-bold mb-4">Add Local Images to Database</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Discover all images in your public/photos folder and add them to the database with local paths. You can migrate to Supabase Storage later.
+            </p>
+            
+            <div className="space-y-4">
+              <Button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const response = await fetch('/api/add-local-images')
+                    const data = await response.json()
+                    
+                    if (response.ok) {
+                      setStatus({
+                        type: 'success',
+                        message: `Preview: Found ${data.total} images. ${data.newImages} new, ${data.alreadyExists} already in database. Check console for details.`
+                      })
+                      console.log('Add Images Preview:', data)
+                    } else {
+                      setStatus({ type: 'error', message: data.error || 'Failed to preview' })
+                    }
+                  } catch (error) {
+                    setStatus({ type: 'error', message: 'Failed to preview' })
+                  }
+                }}
+                variant="outline"
+                className="w-full"
+              >
+                Preview Images to Add
+              </Button>
+
+              <Button
+                type="button"
+                onClick={async () => {
+                  if (!confirm('Are you sure you want to add all local images to the database? This will scan your public/photos folder and add any images found.')) {
+                    return
+                  }
+                  
+                  setIsUploading(true)
+                  setStatus({ type: null, message: '' })
+                  
+                  try {
+                    const response = await fetch('/api/add-local-images', {
+                      method: 'POST'
+                    })
+                    const data = await response.json()
+                    
+                    if (response.ok) {
+                      setStatus({
+                        type: 'success',
+                        message: `Added ${data.summary.successful} images to database! ${data.summary.failed} failed, ${data.summary.skipped} skipped. Check console for details.`
+                      })
+                      console.log('Add Images Results:', data)
+                    } else {
+                      setStatus({ type: 'error', message: data.error || 'Failed to add images' })
+                    }
+                  } catch (error) {
+                    setStatus({ type: 'error', message: 'Failed to add images' })
+                  } finally {
+                    setIsUploading(false)
+                  }
+                }}
+                disabled={isUploading}
+                className="w-full"
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Adding Images...
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="mr-2 h-4 w-4" />
+                    Add All Local Images to Database
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Migration Section */}
+          <div className="mt-12 p-6 border-t border-border">
+            <h2 className="text-2xl font-bold mb-4">Migrate Local Images to Supabase Storage</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Convert all image paths in the database from local paths (e.g., /photos/...) to Supabase Storage URLs.
+            </p>
+            
+            <div className="space-y-4">
+              <Button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const response = await fetch('/api/migrate-all-images-to-storage')
+                    const data = await response.json()
+                    
+                    if (response.ok) {
+                      setStatus({
+                        type: 'success',
+                        message: `Preview: ${data.totalLocalPathImages} images with local paths found. ${data.summary.filesExist} files exist, ${data.summary.filesMissing} files missing. Check console for details.`
+                      })
+                      console.log('Migration Preview:', data)
+                    } else {
+                      setStatus({ type: 'error', message: data.error || 'Failed to preview migration' })
+                    }
+                  } catch (error) {
+                    setStatus({ type: 'error', message: 'Failed to preview migration' })
+                  }
+                }}
+                variant="outline"
+                className="w-full"
+              >
+                Preview Migration (Dry Run)
+              </Button>
+
+              <Button
+                type="button"
+                onClick={async () => {
+                  if (!confirm('Are you sure you want to migrate all local images to Supabase Storage? This will upload files and update database URLs.')) {
+                    return
+                  }
+                  
+                  setIsUploading(true)
+                  setStatus({ type: null, message: '' })
+                  
+                  try {
+                    const response = await fetch('/api/migrate-all-images-to-storage', {
+                      method: 'POST'
+                    })
+                    const data = await response.json()
+                    
+                    if (response.ok) {
+                      setStatus({
+                        type: 'success',
+                        message: `Migration completed! ${data.summary.successful} successful, ${data.summary.failed} failed. Check console for details.`
+                      })
+                      console.log('Migration Results:', data)
+                    } else {
+                      setStatus({ type: 'error', message: data.error || 'Migration failed' })
+                    }
+                  } catch (error) {
+                    setStatus({ type: 'error', message: 'Migration failed' })
+                  } finally {
+                    setIsUploading(false)
+                  }
+                }}
+                disabled={isUploading}
+                className="w-full"
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Migrating Images...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Start Migration
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
 
           {/* Instructions */}
