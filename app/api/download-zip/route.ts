@@ -62,8 +62,9 @@ export async function POST(request: NextRequest) {
     }
 
     const zipData = await zip.generateAsync({ type: "uint8array" })
+    const arrayBuffer = zipData.buffer.slice(zipData.byteOffset, zipData.byteOffset + zipData.byteLength)
 
-    const response = new NextResponse(zipData, {
+    const response = new NextResponse(arrayBuffer, {
       status: 200,
       headers: {
         "Content-Type": "application/zip",
