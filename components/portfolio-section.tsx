@@ -24,7 +24,7 @@ export function PortfolioSection() {
   const [galleryMode, setGalleryMode] = useState<"browse" | "select">("browse")
   const [selectedImages, setSelectedImages] = useState<Record<number, ImageType>>({})
   const [showSelectionSheet, setShowSelectionSheet] = useState(false)
-  const [selectionToast, setSelectionToast] = useState<string | null>(null)
+  const [selectionToast, setSelectionToast] = useState<{ message: string; showReviewCta?: boolean } | null>(null)
   const selectionToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   
   const selectionMode = galleryMode === "select"
@@ -112,8 +112,11 @@ export function PortfolioSection() {
     })
   }, [])
 
-  const showSelectionToast = useCallback(() => {
-    setSelectionToast("Added to your selection — Review & download →")
+  const showSelectionToast = useCallback((message: string, options?: { showReviewCta?: boolean }) => {
+    setSelectionToast({
+      message,
+      showReviewCta: options?.showReviewCta !== false
+    })
     if (selectionToastTimeoutRef.current) {
       clearTimeout(selectionToastTimeoutRef.current)
     }
@@ -303,10 +306,48 @@ export function PortfolioSection() {
 
   const handleDownloadAll = useCallback(async () => {
     if (selectedImageList.length === 0) return
-    for (const image of selectedImageList) {
-      await handleDownloadImage(image)
+
+    const payload = selectedImageList
+      .map((image) => {
+        const url = getImageDownloadUrl(image)
+        if (!url || url === "#") return null
+        return {
+          url,
+          filename: getDownloadFileName(image)
+        }
+      })
+      .filter(Boolean) as { url: string; filename: string }[]
+
+    if (payload.length === 0) {
+      showSelectionToast("No downloadable files found.", { showReviewCta: false })
+      return
     }
-  }, [handleDownloadImage, selectedImageList])
+
+    try {
+      const response = await fetch("/api/download-zip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ images: payload })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Download failed (${response.status})`)
+      }
+
+      const blob = await response.blob()
+      const downloadUrl = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = downloadUrl
+      link.download = "sneha-selected-prints.zip"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(downloadUrl)
+    } catch (error) {
+      console.error("Zip download failed", error)
+      showSelectionToast("Download failed. Please try again or ask for help.", { showReviewCta: false })
+    }
+  }, [getDownloadFileName, getImageDownloadUrl, selectedImageList, showSelectionToast])
 
   const selectionSummary = useMemo(() => {
     if (selectedImageList.length === 0) return ""
@@ -326,10 +367,15 @@ export function PortfolioSection() {
 
   const handleAddFromBrowse = useCallback((image: ImageType) => {
     addImageToSelection(image)
-    if (!selectedImage) {
+    if (selectedImage) {
+      setSelectedImage(null)
+      setTimeout(() => {
+        setShowSelectionSheet(true)
+      }, 250)
+    } else {
       setShowSelectionSheet(true)
     }
-    showSelectionToast()
+    showSelectionToast("Added to your selection — Review & download →", { showReviewCta: true })
   }, [addImageToSelection, selectedImage, showSelectionToast])
 
   const handleCloseModal = () => {
@@ -538,20 +584,22 @@ export function PortfolioSection() {
         )}
 
         {selectionToast && (
-          <div className="fixed bottom-24 left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4">
-            <div className="flex items-center justify-between gap-4 rounded-full bg-black/85 px-5 py-3 text-sm text-white shadow-2xl shadow-black/40">
-              <span>{selectionToast}</span>
-              <Button
-                size="sm"
-                className="rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-black hover:bg-white"
-                onClick={() => {
-                  setSelectionToast(null)
-                  setSelectedImage(null)
-                  setShowSelectionSheet(true)
-                }}
-              >
-                Review now
-              </Button>
+           <div className="fixed bottom-24 left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4">
+             <div className="flex items-center justify-between gap-4 rounded-full bg-black/85 px-5 py-3 text-sm text-white shadow-2xl shadow-black/40">
+              <span>{selectionToast.message}</span>
+              {selectionToast.showReviewCta && (
+                <Button
+                  size="sm"
+                  className="rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-black hover:bg-white"
+                  onClick={() => {
+                    setSelectionToast(null)
+                    setSelectedImage(null)
+                    setShowSelectionSheet(true)
+                  }}
+                >
+                  Review now
+                </Button>
+              )}
             </div>
           </div>
         )}
