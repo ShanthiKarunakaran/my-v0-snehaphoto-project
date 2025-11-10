@@ -61,14 +61,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unable to download any of the requested images", details: failures }, { status: 502 })
     }
 
-    const buffer = await zip.generateAsync({ type: "nodebuffer" })
+    const zipData = await zip.generateAsync({ type: "uint8array" })
 
-    const response = new NextResponse(buffer, {
+    const response = new NextResponse(zipData, {
       status: 200,
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename="sneha-selected-prints.zip"`,
-        "Content-Length": buffer.length.toString()
+        "Content-Length": zipData.byteLength.toString()
       }
     })
 
