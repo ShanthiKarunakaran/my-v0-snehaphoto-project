@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Instagram, Camera, CheckCircle2, AlertCircle, Sparkles } from "lucide-react"
+import { CheckCircle2, AlertCircle, Sparkles } from "lucide-react"
 import { sendContactEmail } from "@/app/actions/contact"
 import { cn } from "@/lib/utils"
 
@@ -136,10 +136,10 @@ export function ContactSection() {
             className="text-4xl md:text-6xl font-bold text-foreground mb-4 text-balance"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
           >
-            Let's Work Together
+            Let&apos;s Work Together
           </h2>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto text-pretty leading-relaxed">
-            Interested in booking a photoshoot? Have questions? I'd love to hear from you!
+            Interested in booking a photoshoot? Have questions? I&apos;d love to hear from you!
           </p>
         </div>
 
@@ -306,7 +306,7 @@ export function ContactSection() {
                   <div>
                     <p className="font-semibold text-foreground mb-1">100% of donations go to OneProsper</p>
                     <p className="text-sm text-muted-foreground">
-                      All proceeds support girls' education and empowerment programs.
+                      All proceeds support girls&apos; education and empowerment programs.
                     </p>
                   </div>
                 </div>

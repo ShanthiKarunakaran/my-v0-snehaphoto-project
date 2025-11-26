@@ -16,7 +16,7 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    const imagesWithUrls: any[] = []
+    const imagesWithUrls: Array<{ id: number; filename: string; alt_text: string; currentUrl: string; suggestedUrl?: string | null; suggestedPath?: string | null; needsUpdate?: boolean }> = []
 
     if (supabaseAdmin && images) {
       // Check in Supabase Storage
@@ -80,7 +80,7 @@ export async function GET() {
           currentUrl: image.cloudinary_url,
           suggestedUrl: foundUrl,
           suggestedPath: foundPath,
-          needsUpdate: foundUrl && foundUrl !== image.cloudinary_url
+          needsUpdate: !!(foundUrl && foundUrl !== image.cloudinary_url)
         })
       }
     }

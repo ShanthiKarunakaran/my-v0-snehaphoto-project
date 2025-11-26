@@ -1,6 +1,5 @@
 "use client"
 
-import { Heart, Camera, Users } from "lucide-react"
 
 export function AboutSection() {
   return (
@@ -18,7 +17,7 @@ export function AboutSection() {
               <span className="text-primary">{"About Me"}</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              Since I picked up my camera in middle school, I've been on a journey to capture how I see the world
+              Since I picked up my camera in middle school, I&apos;ve been on a journey to capture how I see the world
               through my lens—from still life to portraits of family and friends. 
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
@@ -26,12 +25,12 @@ export function AboutSection() {
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Services</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              I am offering photoshoots for senior portraits, headshots, "choose-your-own-theme" portraits, and more!
+              I am offering photoshoots for senior portraits, headshots, &quot;choose-your-own-theme&quot; portraits, and more!
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Mission</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">All proceeds are donated to <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper International</a>, a nonprofit
               organization that funds education, housing, and more for low-income girls in India. I am an active
-              volunteer with this organization, and every donation helps bring another girl's dream to life.
+              volunteer with this organization, and every donation helps bring another girl&apos;s dream to life.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               <a href="#contact" className="text-primary hover:underline">Contact me</a> to book a shoot or ask any questions.

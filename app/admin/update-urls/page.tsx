@@ -62,7 +62,7 @@ export default function UpdateUrlsPage() {
     setTimeout(() => setStatus({ type: null, message: '' }), 2000)
   }
 
-  const useSuggestedUrl = (imageId: number, suggestedUrl: string) => {
+  const applySuggestedUrl = (imageId: number, suggestedUrl: string) => {
     setNewUrls(prev => ({ ...prev, [imageId]: suggestedUrl }))
     setStatus({ type: 'success', message: 'Suggested URL filled in. Click Update URL to save.' })
     setTimeout(() => setStatus({ type: null, message: '' }), 2000)
@@ -191,7 +191,7 @@ export default function UpdateUrlsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => useSuggestedUrl(photo.id, photo.suggestedUrl!)}
+                          onClick={() => applySuggestedUrl(photo.id, photo.suggestedUrl!)}
                           className="text-xs"
                         >
                           Use This

@@ -200,7 +200,7 @@ export default function AdminPage() {
       )
 
       const results = await Promise.allSettled(promises)
-      const errors: any[] = []
+      const errors: Array<{ error?: string; message?: string }> = []
       let successful = 0
       
       // Process results and collect errors

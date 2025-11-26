@@ -1,5 +1,4 @@
 import { Lightbulb, Palette, Camera, BookOpen, ExternalLink } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 const techniques = [
@@ -245,7 +244,7 @@ export default function TechniquesPage() {
                 Voice
               </h3>
               <p className="text-lg mb-4">
-                I enjoyed focusing on portrait lighting for the photomontage project and photo journal, particularly because I loved having people "model" for me. One of the best parts of my final photomontage series is the portraits themselves, because I was able to convey a different emotion based on the lighting.
+                I enjoyed focusing on portrait lighting for the photomontage project and photo journal, particularly because I loved having people &quot;model&quot; for me. One of the best parts of my final photomontage series is the portraits themselves, because I was able to convey a different emotion based on the lighting.
               </p>
               <p>
                 It was also fun to take pictures focusing on light and shadow, because I have always found the use of shadows in pictures very intriguing. In the final series, I focused on GOBOS and the shadows of objects themselves, and I appreciate that these techniques helped bring out the theme of the series.
@@ -257,7 +256,7 @@ export default function TechniquesPage() {
                 Growth
               </h3>
               <p className="text-lg mb-4">
-                I experienced the most growth in the photomontage project by improving my Photoshop skills. Last semester, I didn't enjoy Photoshop, because I did not spend enough time trying to learn its features and experiment with different pictures.
+                I experienced the most growth in the photomontage project by improving my Photoshop skills. Last semester, I didn&apos;t enjoy Photoshop, because I did not spend enough time trying to learn its features and experiment with different pictures.
               </p>
               <p>
                 However, this semester, I put several hours into using Photoshop, experimenting with several tools that ultimately made my pictures look more realistic. My portraits also improved, as compared to last semester, because I took more creative risks and experimented thoroughly with different lighting techniques before choosing ones that would convey the theme of the series well.

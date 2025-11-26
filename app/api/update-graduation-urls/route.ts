@@ -16,7 +16,7 @@ export async function GET() {
     }
 
     // Try to find files in Supabase Storage
-    const photosWithUrls: any[] = []
+    const photosWithUrls: Array<{ id: number; filename: string; cloudinary_url: string; category: string; alt_text: string; currentUrl?: string; suggestedUrl?: string | null; needsUpdate?: boolean }> = []
     
     if (supabaseAdmin && images) {
       // List all folders in the images bucket
@@ -76,7 +76,7 @@ export async function GET() {
           ...image,
           currentUrl: image.cloudinary_url,
           suggestedUrl: foundUrl,
-          needsUpdate: foundUrl && foundUrl !== image.cloudinary_url
+          needsUpdate: !!(foundUrl && foundUrl !== image.cloudinary_url)
         })
       }
     } else {

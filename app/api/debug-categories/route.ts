@@ -15,7 +15,7 @@ export async function GET() {
     }
 
     // Group by category
-    const categoryMap: Record<string, any[]> = {}
+    const categoryMap: Record<string, Array<{ id: number; alt_text: string }>> = {}
     images.forEach(img => {
       const cat = img.category
       if (!categoryMap[cat]) {

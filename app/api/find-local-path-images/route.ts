@@ -21,7 +21,7 @@ export async function GET() {
     })
 
     // Group by category for easier viewing
-    const byCategory: Record<string, any[]> = {}
+    const byCategory: Record<string, Array<{ id: number; filename: string; category: string; alt_text: string; currentUrl: string; path: string }>> = {}
     localPathImages.forEach(img => {
       const cat = img.category || 'Uncategorized'
       if (!byCategory[cat]) {
