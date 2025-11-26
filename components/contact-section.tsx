@@ -144,29 +144,21 @@ export function ContactSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
-          {/* Quick instructions for print requests */}
-          <div className="md:hidden bg-card/40 border-2 border-border/60 rounded-3xl p-6 space-y-3 shadow-sm">
+          {/* Column 1: Book a Session Form */}
+          <div>
             <h3
-              className="text-xl font-semibold text-foreground"
+              className="text-2xl md:text-3xl font-bold text-foreground mb-6"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              How to order a digital print
+              Book a Session
             </h3>
-            <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside leading-relaxed">
-              <li>Tap “Select images to download” in the gallery and choose the photos you want.</li>
-              <li>Use <span className="font-semibold text-primary">“Review selection & download”</span> to open the download panel.</li>
-              <li>Donate via PayPal and use the download buttons to grab the high-resolution files instantly.</li>
-            </ol>
-          </div>
-
-          {/* Contact Form */}
-          <div
-            className={cn(
-              "bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl transition-all duration-700",
-              highlightForm && "ring-4 ring-offset-4 ring-offset-background ring-primary/60 shadow-[0_0_0_12px_rgba(244,63,94,0.08)]"
-            )}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <div
+              className={cn(
+                "bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl transition-all duration-700",
+                highlightForm && "ring-4 ring-offset-4 ring-offset-background ring-primary/60 shadow-[0_0_0_12px_rgba(244,63,94,0.08)]"
+              )}
+            >
+              <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-bold text-foreground mb-2">
                   Your Name
@@ -201,12 +193,12 @@ export function ContactSection() {
 
               <div>
                 <label htmlFor="print-details" className="block text-sm font-bold text-foreground mb-2">
-                  Are you interested in a digital print or photoshoot?
+                  Are you interested in a photoshoot?
                 </label>
                 <Input
                   id="print-details"
                   type="text"
-                  placeholder="e.g. Digital Print or Photoshoot – Senior portraits"
+                  placeholder="e.g. Photoshoot – Senior portraits"
                   value={formData.printDetails}
                   onChange={(e) => setFormData({ ...formData, printDetails: e.target.value })}
                   className="bg-background border-2 rounded-xl"
@@ -285,11 +277,61 @@ export function ContactSection() {
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
               </Button>
-            </form>
+              </form>
+            </div>
           </div>
 
-          {/* Contact Info */}
-          <div className="space-y-8">
+          {/* Column 2: Donate CTA */}
+          <div className="flex flex-col justify-center space-y-6">
+            <div>
+              <h3
+                className="text-2xl md:text-3xl font-bold text-foreground mb-4"
+                style={{ fontFamily: "var(--font-space-grotesk)" }}
+              >
+                Donate
+              </h3>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-6 text-pretty">
+                Support OneProsper International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
+              </p>
+            </div>
+            
+            <div className="bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground mb-1">100% of donations go to OneProsper</p>
+                    <p className="text-sm text-muted-foreground">
+                      All proceeds support girls' education and empowerment programs.
+                    </p>
+                  </div>
+                </div>
+                
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                >
+                  <a
+                    href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Donate via PayPal
+                  </a>
+                </Button>
+                
+                <p className="text-xs text-center text-muted-foreground">
+                  Secure payment through PayPal
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Commented out: Get in Touch section */}
+          {/* <div className="space-y-8">
             <div>
               <h3
                 className="text-2xl font-bold text-foreground mb-6"
@@ -341,8 +383,8 @@ export function ContactSection() {
                 How to order a digital print
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside leading-relaxed">
-                <li>Tap “Select images to download” in the gallery and choose the photos you want.</li>
-                <li>Use <span className="font-semibold text-primary">“Review selection & download”</span> to open the download panel.</li>
+                <li>Tap "Select images to download" in the gallery and choose the photos you want.</li>
+                <li>Use <span className="font-semibold text-primary">"Review selection & download"</span> to open the download panel.</li>
                 <li>Donate via PayPal and use the download buttons to grab the high-resolution files instantly.</li>
                 <li>
                   Donations are collected via PayPal:&nbsp;
@@ -358,7 +400,7 @@ export function ContactSection() {
                 </li>
               </ul>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -4,11 +4,11 @@ import Image from "next/image"
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[30vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
-      {/* Red safelight glow effects */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-red-600/25 rounded-full blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
-      {/* Moving safelight glow that sweeps across the image */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-red-600/40 rounded-full blur-[140px] animate-[safelight-sweep_8s_ease-in-out_infinite]" />
+    <section className="relative min-h-[30vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-background">
+      {/* Primary color glow effects */}
+      <div className="absolute top-20 left-10 w-64 h-64 bg-primary/25 rounded-full blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
+      {/* Moving glow that sweeps across the image */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-primary/40 rounded-full blur-[140px] animate-[safelight-sweep_8s_ease-in-out_infinite]" />
 
       {/* Clothesline string (curved) */}
       <div className="pointer-events-none absolute left-0 right-0 top-16 z-0 opacity-60">
@@ -59,10 +59,10 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-16">
           {/* Left: Sneha image */}
           <div className="hidden md:block relative w-full md:max-w-[520px] lg:max-w-[460px] mx-auto lg:mx-0 lg:translate-x-2 mt-6 aspect-[4/5] overflow-visible rotate-[-3deg] lg:rotate-[-5deg] origin-center group cursor-pointer transition-all duration-1000 ease-in-out hover:rotate-[-1deg] hover:scale-105">
-            {/* Background spotlight to lift silhouette from dark bg */}
-            <div className="pointer-events-none absolute -left-10 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-radial from-red-600/60 via-red-500/20 to-transparent blur-[90px]" />
-            {/* Neutral white base spotlight for extra contrast */}
-            <div className="pointer-events-none absolute -left-8 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-gradient-radial from-white/30 via-white/10 to-transparent blur-2xl" />
+            {/* Background spotlight to lift silhouette */}
+            <div className="pointer-events-none absolute -left-10 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-radial from-primary/60 via-primary/20 to-transparent blur-[90px]" />
+            {/* Neutral base spotlight for extra contrast */}
+            <div className="pointer-events-none absolute -left-8 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-gradient-radial from-background/30 via-background/10 to-transparent blur-2xl" />
             <Image
               src="/photos/aboutMe/sneha-silhouette-transparentBg.png"
               alt="Sneha photographing portraits"
@@ -79,46 +79,46 @@ export function HeroSection() {
               className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-reveal_8s_ease-in-out_infinite]"
             />
             {/* Artistic oval frame border */}
-            <div className="pointer-events-none absolute inset-0 rounded-[50%] border border-red-400/15 group-hover:border-red-300/25 transition-all duration-1000 ease-in-out blur-[0.5px]" />
+            <div className="pointer-events-none absolute inset-0 rounded-[50%] border border-primary/15 group-hover:border-primary/25 transition-all duration-1000 ease-in-out blur-[0.5px]" />
             {/* Optional subtle top highlight for cutout depth */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/5 via-transparent to-transparent rounded-t-[50%]" />
-            {/* Safelight rim light on left edge */}
-            <div className="pointer-events-none absolute -left-6 top-0 h-full w-16 bg-gradient-to-r from-red-400/35 via-red-400/0 to-transparent blur-lg mix-blend-screen" />
-            {/* Foreground sheen to brighten black silhouette edges */}
-            <div className="pointer-events-none absolute -left-6 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-gradient-radial from-red-300/45 via-red-300/20 to-transparent blur-[70px] mix-blend-screen" />
-            {/* Additional white edge highlight for maximum contrast */}
-            <div className="pointer-events-none absolute -left-4 top-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-radial from-white/40 via-white/15 to-transparent blur-xl mix-blend-screen" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-background/5 via-transparent to-transparent rounded-t-[50%]" />
+            {/* Rim light on left edge */}
+            <div className="pointer-events-none absolute -left-6 top-0 h-full w-16 bg-gradient-to-r from-primary/35 via-primary/0 to-transparent blur-lg mix-blend-screen" />
+            {/* Foreground sheen to brighten edges */}
+            <div className="pointer-events-none absolute -left-6 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-gradient-radial from-primary/45 via-primary/20 to-transparent blur-[70px] mix-blend-screen" />
+            {/* Additional edge highlight for maximum contrast */}
+            <div className="pointer-events-none absolute -left-4 top-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-radial from-background/40 via-background/15 to-transparent blur-xl mix-blend-screen" />
           </div>
 
           {/* Right: Text content */}
           <div className="text-left relative">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-950/50 mb-6 border border-red-900/50 backdrop-blur-sm text-zinc-100">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 mb-6 border border-primary/40 backdrop-blur-sm text-foreground">
               <Camera className="h-4 w-4" />
               <span className="text-sm font-medium">Photography with Purpose</span>
             </div>
 
             <div className="relative inline-block">
               <h1
-                className="text-6xl md:text-7xl lg:text-8xl font-bold text-zinc-100 mb-6 leading-tight text-balance relative z-10"
+                className="text-6xl md:text-7xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance relative z-10"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
-                Bold. Creative.
+                Turning creative vision into positive change
                 <br />
-                <span className="text-red-400">Capturing You!</span>
+                <span className="text-primary"></span>
               </h1>
               {/* Safelight sheen sweep across headline */}
-              <div className="pointer-events-none absolute -inset-x-24 top-0 h-full bg-gradient-to-r from-transparent via-red-400/15 to-transparent animate-[shine_6s_linear_infinite]" />
+              <div className="pointer-events-none absolute -inset-x-24 top-0 h-full bg-gradient-to-r from-transparent via-primary/15 to-transparent animate-[shine_6s_linear_infinite]" />
             </div>
 
-            <p className="text-xl md:text-2xl text-zinc-300 mb-10 max-w-2xl leading-relaxed">
-              Turning creative vision into positive change. Every photoshoot supports a cause – funds{" "}
+            <p className="text-xl md:text-2xl text-foreground/80 mb-10 max-w-2xl leading-relaxed">
+              Every photoshoot supports a cause – funds{" "}
               <a
                 href="https://www.oneprosper.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-red-300 hover:text-red-200 hover:underline transition-colors"
+                className="text-primary hover:text-primary/80 hover:underline transition-colors"
               >
-                OneProsper’s
+                OneProsper's
               </a>{" "}
               education projects.
             </p>
@@ -130,7 +130,7 @@ export function HeroSection() {
                 className="bg-primary hover:bg-primary/80 text-primary-foreground text-base px-8 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group"
               >
                 <a href="#portfolio" className="flex items-center gap-2">
-                  Buy a Digital Print
+                  View my work
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </a>
               </Button>
@@ -140,7 +140,7 @@ export function HeroSection() {
                 size="lg"
                 className="text-base px-8 rounded-lg border-2 border-primary/40 bg-card/60 backdrop-blur-sm hover:bg-primary/10 hover:border-primary text-foreground hover:text-primary-foreground transition-all"
               >
-                <a href="#contact">Book a Session</a>
+                <a href="#contact">Book a Session or Donate</a>
               </Button>
             </div>
           </div>
@@ -148,9 +148,9 @@ export function HeroSection() {
       </div>
 
       {/* Subtle vignette effect */}
-      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/70 pointer-events-none" />
-      {/* Low fog at bottom for darkroom atmosphere */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-red-900/25 via-zinc-900/0 to-transparent blur-2xl opacity-70" />
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-foreground/20 pointer-events-none" />
+      {/* Low fog at bottom for atmosphere */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary/10 via-background/0 to-transparent blur-2xl opacity-70" />
     </section>
   )
 }

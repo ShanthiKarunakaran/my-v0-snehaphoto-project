@@ -21,6 +21,13 @@ const TESTIMONIALS: Testimonial[] = [
     quote:
       "The photoshoot is one of my best experiences to date! Sneha really listened and incorporated my ideas into the photoshoot. She is so open to all concepts, and works very hard to fully research the concepts. Me and my friend opted for a k-pop style photoshoot, and Sneha executed what we had envisioned so well. I will definitely do this again. I can't state how amazing the experience truly was.",
     avatarSrc: "/photos/aboutMe/sneha-silhouette-favicon.png",
+  },
+  {
+    name: "Ms. Hughes",
+    role: "Portrait Client",
+    quote:
+      "Sneha takes absolute pride in her work. She comes to a shoot with a detailed list of shots, she gives clear and concise directions, and creates beautiful and thoughtful images.",
+    avatarSrc: "/photos/aboutMe/sneha-silhouette-favicon.png",
   }
 ]
 

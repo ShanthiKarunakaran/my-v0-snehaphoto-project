@@ -196,3 +196,58 @@ export async function POST(request: NextRequest) {
     }, { status: 500 })
   }
 }
+
+// DELETE /api/images - Delete images by filename pattern
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const filename = searchParams.get('filename')
+    const id = searchParams.get('id')
+
+    if (!filename && !id) {
+      return NextResponse.json(
+        { error: 'Missing required parameter: filename or id' },
+        { status: 400 }
+      )
+    }
+
+    // Use admin client to bypass RLS policies
+    const client = supabaseAdmin || supabase
+    
+    if (!supabaseAdmin) {
+      console.warn('Using regular supabase client - RLS policies may block deletes. Set SUPABASE_SERVICE_ROLE_KEY to bypass RLS.')
+    }
+
+    let query = client.from('images').delete()
+
+    if (id) {
+      query = query.eq('id', id)
+    } else if (filename) {
+      // Match filename (case-insensitive, partial match)
+      query = query.ilike('filename', `%${filename}%`)
+    }
+
+    const { data, error } = await query.select()
+
+    if (error) {
+      console.error('Database delete error:', error)
+      return NextResponse.json({ 
+        error: error.message,
+        details: error,
+        code: error.code
+      }, { status: 500 })
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      deleted: data?.length || 0,
+      images: data 
+    }, { status: 200 })
+  } catch (error) {
+    console.error('API catch error:', error)
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
+  }
+}

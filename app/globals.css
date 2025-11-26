@@ -4,106 +4,100 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Bubble-gum palette mapping
-     1) bg/text      -> #f8b8d0 / #000000
-     2) secondary    -> #f194b8 / #000000
-     3) primary      -> #e6308a / #000000
-     4) accent       -> #cd2576 / #ffffff
-     5) strong-accent-> #b51963 / #ffffff (used for ring/chart)
-  */
-  --background: #f8b8d0;
-  --foreground: #000000;
+  /* Red Orange & Cream palette */
+  --background: #FFF3D9; /* Cream */
+  --foreground: #3B0918; /* Rose Red */
 
-  --card: #f8b8d0;
-  --card-foreground: #000000;
+  --card: #FFF3D9; /* Cream */
+  --card-foreground: #3B0918; /* Rose Red */
 
-  --popover: #f8b8d0;
-  --popover-foreground: #000000;
+  --popover: #FFF3D9;
+  --popover-foreground: #3B0918;
 
-  --primary: #e6308a;
-  --primary-foreground: #000000;
+  --primary: #DC4731; /* Red Orange */
+  --primary-foreground: #FFF3D9; /* Cream */
 
-  --secondary: #f194b8;
-  --secondary-foreground: #000000;
+  --secondary: #B8390E; /* Burnt Orange */
+  --secondary-foreground: #FFF3D9; /* Cream */
 
-  --muted: #f194b8;
-  --muted-foreground: #000000;
+  --muted: #FFF3D9; /* Cream */
+  --muted-foreground: #3B0918; /* Rose Red */
 
-  --accent: #cd2576;
-  --accent-foreground: #ffffff;
+  --accent: #3B0918; /* Rose Red */
+  --accent-foreground: #FFF3D9; /* Cream */
 
-  --destructive: #e6308a;
-  --destructive-foreground: #000000;
+  --destructive: #B8390E; /* Burnt Orange */
+  --destructive-foreground: #FFF3D9; /* Cream */
 
-  --border: #f194b8;
-  --input: #f194b8;
-  --ring: #b51963;
+  --border: #DC4731; /* Red Orange */
+  --input: #FFF3D9; /* Cream */
+  --ring: #DC4731; /* Red Orange */
 
-  /* Charts lean across the palette */
-  --chart-1: #e6308a;
-  --chart-2: #cd2576;
-  --chart-3: #f194b8;
-  --chart-4: #b51963;
-  --chart-5: #f8b8d0;
+  /* Charts tuned to red-orange family */
+  --chart-1: #DC4731; /* Red Orange */
+  --chart-2: #B8390E; /* Burnt Orange */
+  --chart-3: #3B0918; /* Rose Red */
+  --chart-4: #DC4731;
+  --chart-5: #B8390E;
 
   --radius: 10px;
 
-  --sidebar: #f8b8d0;
-  --sidebar-foreground: #000000;
-  --sidebar-primary: #e6308a;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #cd2576;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #f194b8;
-  --sidebar-ring: #b51963;
+  --sidebar: #FFF3D9;
+  --sidebar-foreground: #3B0918;
+  --sidebar-primary: #DC4731;
+  --sidebar-primary-foreground: #FFF3D9;
+  --sidebar-accent: #B8390E;
+  --sidebar-accent-foreground: #FFF3D9;
+  --sidebar-border: #DC4731;
+  --sidebar-ring: #DC4731;
 }
 
 .dark {
-  /* Glossy black theme */
-  --background: #0b0b0c; /* deep near-black */
-  --foreground: #f4f4f5; /* soft white */
+  /* Red Orange & Cream theme */
+  --background: #FFF3D9; /* Cream */
+  --foreground: #3B0918; /* Rose Red */
 
-  --card: #111113; /* slightly lifted from bg */
-  --card-foreground: #f4f4f5;
+  --card: #FFF3D9; /* Cream */
+  --card-foreground: #3B0918; /* Rose Red */
 
-  --popover: #0f0f10;
-  --popover-foreground: #f4f4f5;
+  --popover: #FFF3D9;
+  --popover-foreground: #3B0918;
 
-  --primary: #ef4444; /* crimson highlight */
-  --primary-foreground: #ffffff;
+  --primary: #DC4731; /* Red Orange */
+  --primary-foreground: #FFF3D9; /* Cream */
 
-  --secondary: #1c1c1f; /* charcoal */
-  --secondary-foreground: #e5e7eb;
+  --secondary: #B8390E; /* Burnt Orange */
+  --secondary-foreground: #FFF3D9; /* Cream */
 
-  --muted: #1a1a1c;
-  --muted-foreground: #9ca3af;
+  --muted: #FFF3D9; /* Cream with opacity for muted areas */
+  --muted-foreground: #3B0918; /* Rose Red */
 
-  --accent: #7f1d1d; /* deep red accent */
-  --accent-foreground: #fef2f2;
+  --accent: #3B0918; /* Rose Red */
+  --accent-foreground: #FFF3D9; /* Cream */
 
-  --destructive: #991b1b;
-  --destructive-foreground: #fee2e2;
+  --destructive: #B8390E; /* Burnt Orange */
+  --destructive-foreground: #FFF3D9; /* Cream */
 
-  --border: #232326; /* hairline glossy edge */
-  --input: #2a2a2e;
-  --ring: #b91c1c; /* red ring for focus */
+  --border: #DC4731; /* Red Orange */
+  --input: #FFF3D9; /* Cream */
+  --ring: #DC4731; /* Red Orange for focus */
 
-  /* Charts tuned to red family */
-  --chart-1: #ef4444;
-  --chart-2: #f97316;
-  --chart-3: #f59e0b;
-  --chart-4: #22c55e;
-  --chart-5: #06b6d4;
+  /* Charts tuned to red-orange family */
+  --chart-1: #DC4731; /* Red Orange */
+  --chart-2: #B8390E; /* Burnt Orange */
+  --chart-3: #3B0918; /* Rose Red */
+  --chart-4: #DC4731;
+  --chart-5: #B8390E;
 
   /* Sidebar colors (if used) */
-  --sidebar: #101013;
-  --sidebar-foreground: #f4f4f5;
-  --sidebar-primary: #ef4444;
-  --sidebar-primary-foreground: #0b0b0c;
-  --sidebar-accent: #1f1f23;
-  --sidebar-accent-foreground: #f4f4f5;
-  --sidebar-border: #232326;
-  --sidebar-ring: #b91c1c;
+  --sidebar: #FFF3D9;
+  --sidebar-foreground: #3B0918;
+  --sidebar-primary: #DC4731;
+  --sidebar-primary-foreground: #FFF3D9;
+  --sidebar-accent: #B8390E;
+  --sidebar-accent-foreground: #FFF3D9;
+  --sidebar-border: #DC4731;
+  --sidebar-ring: #DC4731;
 }
 
 @theme inline {
@@ -151,6 +145,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 23px,
+      rgba(59, 9, 24, 0.08) 23px,
+      rgba(59, 9, 24, 0.08) 24px
+    );
   }
 }
 
@@ -164,6 +165,15 @@ html {
   }
   .hero-object-pos {
     object-position: 80% center;
+  }
+  .bg-notebook-lines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 23px,
+      rgba(59, 9, 24, 0.08) 23px,
+      rgba(59, 9, 24, 0.08) 24px
+    );
   }
 }
 

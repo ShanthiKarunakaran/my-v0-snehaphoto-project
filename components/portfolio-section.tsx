@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import Image from "next/image"
-import { Sparkles, X, DownloadCloud } from "lucide-react"
+import { Sparkles, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { Image as ImageType } from "@/lib/supabase"
@@ -21,13 +21,6 @@ export function PortfolioSection() {
   const [pagination, setPagination] = useState<{ total: number; totalPages: number } | null>(null);
   const [highlightGallery, setHighlightGallery] = useState(false);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [galleryMode, setGalleryMode] = useState<"browse" | "select">("browse")
-  const [selectedImages, setSelectedImages] = useState<Record<number, ImageType>>({})
-  const [showSelectionSheet, setShowSelectionSheet] = useState(false)
-  const [selectionToast, setSelectionToast] = useState<{ message: string; showReviewCta?: boolean } | null>(null)
-  const selectionToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  
-  const selectionMode = galleryMode === "select"
 
   // Function to fetch images from the API
   const fetchImages = async () => {
@@ -88,52 +81,6 @@ export function PortfolioSection() {
   };
 
 
-  const toggleImageSelection = useCallback((image: ImageType) => {
-    setSelectedImages((prev) => {
-      const next = { ...prev }
-      if (next[image.id]) {
-        delete next[image.id]
-      } else {
-        next[image.id] = image
-      }
-      return next
-    })
-  }, [])
-
-  const addImageToSelection = useCallback((image: ImageType) => {
-    setSelectedImages((prev) => {
-      if (prev[image.id]) {
-        return prev
-      }
-      return {
-        ...prev,
-        [image.id]: image
-      }
-    })
-  }, [])
-
-  const showSelectionToast = useCallback((message: string, options?: { showReviewCta?: boolean }) => {
-    setSelectionToast({
-      message,
-      showReviewCta: options?.showReviewCta !== false
-    })
-    if (selectionToastTimeoutRef.current) {
-      clearTimeout(selectionToastTimeoutRef.current)
-    }
-    selectionToastTimeoutRef.current = setTimeout(() => {
-      setSelectionToast(null)
-      selectionToastTimeoutRef.current = null
-    }, 3200)
-  }, [])
-
-  const clearSelection = useCallback(() => {
-    setSelectedImages({})
-    setShowSelectionSheet(false)
-    setGalleryMode("browse")
-  }, [])
-
-  const selectedCount = Object.keys(selectedImages).length
-  const selectedImageList = useMemo(() => Object.values(selectedImages), [selectedImages])
 
   const flashGallery = useCallback(() => {
     setHighlightGallery(true)
@@ -251,132 +198,6 @@ export function PortfolioSection() {
   // Use images directly from database
   const filteredImages = images
 
-  const siteUrl = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return window.location.origin
-    }
-    return process.env.NEXT_PUBLIC_SITE_URL || "https://snehaaprints.vercel.app"
-  }, [])
-
-  const getPrintLabel = useCallback((image: ImageType) => {
-    const name = image.alt_text || image.filename || "digital print"
-    return image.category ? `${image.category} → ${name}` : name
-  }, [])
-
-  const getImageDownloadUrl = useCallback(
-    (image: ImageType) => {
-      if (!image.cloudinary_url) return "#"
-      if (image.cloudinary_url.startsWith("http")) return image.cloudinary_url
-      return `${siteUrl}${image.cloudinary_url}`
-    },
-    [siteUrl]
-  )
-
-  const getDownloadFileName = useCallback((image: ImageType) => {
-    const base = image.filename || image.alt_text || "image"
-    const sanitized = base.replace(/[^a-zA-Z0-9-_\.]+/g, "_")
-    if (sanitized.includes(".")) return sanitized
-    return `${sanitized}.jpg`
-  }, [])
-
-  const handleDownloadImage = useCallback(
-    async (image: ImageType) => {
-      const url = getImageDownloadUrl(image)
-      if (!url || url === "#") return
-
-      try {
-        const response = await fetch(url)
-        if (!response.ok) throw new Error(`Failed to fetch image: ${response.status}`)
-
-        const blob = await response.blob()
-        const objectUrl = URL.createObjectURL(blob)
-        const link = document.createElement("a")
-        link.href = objectUrl
-        link.download = getDownloadFileName(image)
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(objectUrl)
-      } catch (error) {
-        console.error("Image download failed", error)
-      }
-    },
-    [getDownloadFileName, getImageDownloadUrl]
-  )
-
-  const handleDownloadAll = useCallback(async () => {
-    if (selectedImageList.length === 0) return
-
-    const payload = selectedImageList
-      .map((image) => {
-        const url = getImageDownloadUrl(image)
-        if (!url || url === "#") return null
-        return {
-          url,
-          filename: getDownloadFileName(image)
-        }
-      })
-      .filter(Boolean) as { url: string; filename: string }[]
-
-    if (payload.length === 0) {
-      showSelectionToast("No downloadable files found.", { showReviewCta: false })
-      return
-    }
-
-    try {
-      const response = await fetch("/api/download-zip", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ images: payload })
-      })
-
-      if (!response.ok) {
-        throw new Error(`Download failed (${response.status})`)
-      }
-
-      const blob = await response.blob()
-      const downloadUrl = URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = downloadUrl
-      link.download = "sneha-selected-prints.zip"
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(downloadUrl)
-    } catch (error) {
-      console.error("Zip download failed", error)
-      showSelectionToast("Download failed. Please try again or ask for help.", { showReviewCta: false })
-    }
-  }, [getDownloadFileName, getImageDownloadUrl, selectedImageList, showSelectionToast])
-
-  const selectionSummary = useMemo(() => {
-    if (selectedImageList.length === 0) return ""
-    return selectedImageList
-      .map((img, index) => `${index + 1}. ${getPrintLabel(img)}`)
-      .join("\n")
-  }, [selectedImageList, getPrintLabel])
-
-  const copySelectionSummary = useCallback(async () => {
-    if (!selectionSummary) return
-    try {
-      await navigator.clipboard.writeText(selectionSummary)
-    } catch (err) {
-      console.error("Failed to copy selection summary", err)
-    }
-  }, [selectionSummary])
-
-  const handleAddFromBrowse = useCallback((image: ImageType) => {
-    addImageToSelection(image)
-    if (selectedImage) {
-      setSelectedImage(null)
-      setTimeout(() => {
-        setShowSelectionSheet(true)
-      }, 250)
-    } else {
-      setShowSelectionSheet(true)
-    }
-    showSelectionToast("Added to your selection — Review & download →", { showReviewCta: true })
-  }, [addImageToSelection, selectedImage, showSelectionToast])
 
   const handleCloseModal = () => {
     setSelectedImage(null)
@@ -403,23 +224,6 @@ export function PortfolioSection() {
     }
   }, [selectedImage])
 
-  useEffect(() => {
-    return () => {
-      if (selectionToastTimeoutRef.current) {
-        clearTimeout(selectionToastTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (showSelectionSheet && selectionToast) {
-      setSelectionToast(null)
-      if (selectionToastTimeoutRef.current) {
-        clearTimeout(selectionToastTimeoutRef.current)
-        selectionToastTimeoutRef.current = null
-      }
-    }
-  }, [showSelectionSheet, selectionToast])
 
   return (
     <>
@@ -456,66 +260,6 @@ export function PortfolioSection() {
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto text-pretty leading-relaxed">
               A collection of moments captured through my lens
             </p>
-            <p className="mt-4 text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Pick the images you love, then donate to support OneProsper and the girls they serve.
-            </p>
-            {selectionMode && (
-              <p className="mt-6 text-center text-xs text-muted-foreground uppercase tracking-wide">
-                Add to selection mode active · Tap each image to add it
-              </p>
-            )}
-          </div>
-
-          {/* <div className="mb-10">
-            <ol className="flex flex-wrap items-center justify-center gap-8 text-sm font-semibold text-foreground">
-              {["Browse", "Select", "Download", "Support"].map((label, index) => {
-                const stepNumber = index + 1
-                const isActive = (() => {
-                  if (stepNumber === 1) return galleryMode === "browse"
-                  if (stepNumber === 2) return galleryMode === "select"
-                  if (stepNumber === 3) return showSelectionSheet && selectedCount > 0
-                  if (stepNumber === 4) return showSelectionSheet && selectedCount > 0
-                  return false
-                })()
-                return (
-                  <li key={label} className={cn("flex items-center gap-2", !isActive && "text-muted-foreground")}
-                  >
-                    <span>{`Step ${stepNumber}:`}</span>
-                    <span>{label}</span>
-                  </li>
-                )
-              })}
-            </ol>
-          </div> */}
-
-          <div className="mb-12 flex flex-col items-center gap-4 text-center">
-            <h3 className="text-3xl font-semibold text-foreground">Choose your prints</h3>
-            <div className="inline-flex items-center gap-2 text-sm font-semibold">
-              {[{ label: "Browse", value: "browse" as const }, { label: "Add to selection", value: "select" as const }].map(({ label, value }) => {
-                const isActive = galleryMode === value
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => {
-                      setGalleryMode(value)
-                      if (value === "browse") {
-                        setShowSelectionSheet(false)
-                      }
-                    }}
-                    className={cn(
-                      "min-w-[150px] rounded-2xl px-6 py-3 transition-colors",
-                      isActive
-                        ? "bg-[#A50F4D] text-white shadow-sm"
-                        : "bg-[#F8CFE0] text-[#B13864] hover:bg-[#F4BDD3]"
-                    )}
-                  >
-                    {label}
-                  </button>
-                )
-              })}
-            </div>
           </div>
 
           {/* Category Filter */}
@@ -555,86 +299,16 @@ export function PortfolioSection() {
             </nav>
           </div>
 
-        {selectionMode && selectedCount > 0 && (
-          <div className="fixed inset-x-0 bottom-6 z-40 flex justify-center px-4">
-            <div className="flex items-center gap-4 rounded-full border border-border bg-background/95 px-6 py-3 shadow-xl shadow-primary/15">
-              <span className="text-sm font-medium text-muted-foreground">
-                {selectedCount} image{selectedCount === 1 ? "" : "s"} selected
-              </span>
-              <Button
-                size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-5 text-sm font-semibold shadow-primary/40"
-                onClick={() => setShowSelectionSheet(true)}
-              >
-                Review & download
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {!selectionMode && selectedCount > 0 && (
-          <div className="fixed bottom-6 right-6 z-30">
-            <Button
-              className="rounded-full bg-[#A50F4D] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#A50F4D]/30 hover:bg-[#8F0C41]"
-              onClick={() => setShowSelectionSheet(true)}
-            >
-              Review & download ({selectedCount})
-            </Button>
-          </div>
-        )}
-
-        {selectionToast && (
-           <div className="fixed bottom-24 left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4">
-             <div className="flex items-center justify-between gap-4 rounded-full bg-black/85 px-5 py-3 text-sm text-white shadow-2xl shadow-black/40">
-              <span>{selectionToast.message}</span>
-              {selectionToast.showReviewCta && (
-                <Button
-                  size="sm"
-                  className="rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-black hover:bg-white"
-                  onClick={() => {
-                    setSelectionToast(null)
-                    setSelectedImage(null)
-                    setShowSelectionSheet(true)
-                  }}
-                >
-                  Review now
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
 
           {/* Image Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredImages.map((image, index) => {
-              const isSelected = !!selectedImages[image.id]
-              return (
-                <div
-                  key={image.id}
-                  onClick={() => {
-                    if (selectionMode) {
-                      toggleImageSelection(image)
-                    } else {
-                      setSelectedImage(image)
-                    }
-                  }}
-                  className={cn(
-                    "group relative min-h-[400px] overflow-hidden rounded-2xl bg-zinc-900 cursor-pointer shadow-md transition-all duration-300",
-                    selectionMode ? "hover:ring-2 hover:ring-primary/40" : "hover:scale-105 hover:shadow-2xl",
-                    isSelected && "ring-2 ring-primary shadow-lg shadow-primary/30"
-                  )}
-                  style={{ animationDelay: `${index * 0.1}s`, position: "relative" }}
-                >
-                  {selectionMode && (
-                    <div
-                      className={cn(
-                        "absolute top-4 right-4 z-30 flex h-9 w-9 items-center justify-center rounded-full border-2 bg-black/40 text-sm font-semibold",
-                        isSelected ? "border-primary bg-primary text-primary-foreground" : "border-white/70 text-transparent"
-                      )}
-                    >
-                      ✓
-                    </div>
-                  )}
+            {filteredImages.map((image, index) => (
+              <div
+                key={image.id}
+                onClick={() => setSelectedImage(image)}
+                className="group relative min-h-[400px] overflow-hidden rounded-2xl bg-card cursor-pointer shadow-md transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                style={{ animationDelay: `${index * 0.1}s`, position: "relative" }}
+              >
                 {image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in') ? (
                   // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
                   <img
@@ -660,62 +334,28 @@ export function PortfolioSection() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="rounded-2xl bg-black/65 backdrop-blur-sm p-4 space-y-3">
+                  <div className="rounded-2xl bg-foreground/65 backdrop-blur-sm p-4 space-y-3">
                     <div>
-                      <p className="text-white text-sm font-semibold">{image.alt_text}</p>
-                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-white/70">
+                      <p className="text-background text-sm font-semibold">{image.alt_text}</p>
+                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-background/70">
                         {image.category || "Uncategorized"}
                       </p>
                     </div>
-                    {selectionMode ? (
-                       <Button
-                         size="sm"
-                         variant={isSelected ? "default" : "secondary"}
-                         className={cn(
-                           "w-full flex items-center justify-center gap-2",
-                           isSelected ? "bg-primary text-primary-foreground" : "bg-white/90 text-black hover:bg-white"
-                         )}
-                         onClick={(event) => {
-                           event.stopPropagation()
-                           toggleImageSelection(image)
-                         }}
-                       >
-                        {isSelected ? "Added" : "Add to selection"}
-                       </Button>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="bg-white/90 text-black hover:bg-white"
-                          onClick={(event) => {
-                            event.stopPropagation()
-                            setSelectedImage(image)
-                          }}
-                        >
-                          View
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className={cn(
-                            "bg-white/90 text-black hover:bg-white",
-                            isSelected && "pointer-events-none opacity-70"
-                          )}
-                          onClick={(event) => {
-                            event.stopPropagation()
-                            handleAddFromBrowse(image)
-                          }}
-                        >
-                          {isSelected ? "In selection" : "Add to My Selection"}
-                        </Button>
-                      </div>
-                    )}
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="w-full bg-background/90 text-foreground hover:bg-background"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        setSelectedImage(image)
+                      }}
+                    >
+                      View
+                    </Button>
                   </div>
                 </div>
               </div>
-              )
-            })}
+            ))}
           </div>
 
           {/* Pagination UI */}
@@ -780,154 +420,17 @@ export function PortfolioSection() {
         </div>
       </section>
 
-      {showSelectionSheet && (
-        <div className="fixed inset-0 z-40 flex">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowSelectionSheet(false)} />
-          <aside className="relative ml-auto flex h-full w-full max-w-xl flex-col bg-background shadow-2xl">
-            <div className="flex items-start justify-between border-b border-border px-6 py-5">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-foreground shadow shadow-primary/40">
-                  <DownloadCloud className="h-4 w-4" />
-                  Step 3 · Download
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Your Selected Prints</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Download anything you’ve picked, then donate only if you’d like.
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowSelectionSheet(false)}
-                className="rounded-full bg-muted p-2 text-muted-foreground hover:text-foreground"
-                aria-label="Close"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-6 py-6">
-              {selectedCount === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  You haven’t picked any images yet. Switch to “Select multiple” or tap “Add to My Selection” in Browse mode to get started.
-                </p>
-              ) : (
-                <div className="space-y-5 text-sm text-muted-foreground">
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-semibold text-foreground">Selected images ({selectedCount})</h4>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Preview your picks below, then choose Download to save them all together.
-                      </p>
-                    </div>
-                    <div className="flex gap-3 overflow-x-auto pb-2">
-                      {selectedImageList.map((img) => (
-                        <div key={img.id} className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border/50">
-                          {img.cloudinary_url ? (
-                            <img src={img.cloudinary_url} alt={img.alt_text} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">No preview</div>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => toggleImageSelection(img)}
-                            className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/70 text-white text-xs"
-                            aria-label="Remove from selection"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedImageList.map((img) => (
-                        <button
-                          key={`${img.id}-chip`}
-                          type="button"
-                          onClick={() => toggleImageSelection(img)}
-                          className="group inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-xs text-muted-foreground hover:border-destructive/60 hover:text-destructive transition-colors"
-                        >
-                          <span className="font-medium text-foreground/80 group-hover:text-destructive">{img.alt_text || img.filename}</span>
-                          <span className="text-muted-foreground/70 group-hover:text-destructive">×</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                    <p className="font-semibold text-primary">Step 3 · Download selected images</p>
-                    <p className="mt-2 text-primary/80">
-                      Download everything you’ve selected in a couple of clicks. High-resolution files are saved straight to your device.
-                    </p>
-                    <Button
-                      size="sm"
-                      className="mt-3 bg-primary text-primary-foreground hover:bg-primary/90"
-                      onClick={handleDownloadAll}
-                    >
-                      Download selected
-                    </Button>
-                  </div>
-
-                  <div className="rounded-2xl border border-border/70 bg-muted/30 p-4">
-                    <p className="font-medium text-foreground">Step 4 · Support the cause (optional)</p>
-                    <p className="mt-2">
-                      You can download your photos for free. If my photography inspired you, consider supporting girls’
-                      education through OneProsper International.
-                    </p>
-                    <a
-                      href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                    >
-                      Donate via PayPal
-                    </a>
-                    <p className="mt-2 text-center text-xs text-muted-foreground italic">Optional</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="font-medium text-foreground">Need help or a different format?</p>
-                    <p>Have questions before donating? I’m happy to help.</p>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setShowSelectionSheet(false)
-                        const contactSection = document.querySelector("#contact")
-                        if (contactSection) {
-                          contactSection.scrollIntoView({ behavior: "smooth" })
-                        }
-                      }}
-                    >
-                      Ask a question
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="border-t border-border px-6 py-4 flex justify-end gap-3">
-              <Button variant="ghost" onClick={() => setShowSelectionSheet(false)}>
-                Close
-              </Button>
-              <Button variant="ghost" onClick={clearSelection}>
-                Clear selection
-              </Button>
-            </div>
-          </aside>
-        </div>
-      )}
 
 
       {selectedImage && (
         <div className="fixed inset-0 z-50 animate-in fade-in duration-200">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-sm" onClick={handleCloseModal} />
+          <div className="absolute inset-0 bg-foreground/95 backdrop-blur-sm" onClick={handleCloseModal} />
 
           {/* Close button - separate layer on top */}
           <button
             onClick={handleCloseModal}
-            className="absolute top-4 right-4 z-[60] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+            className="absolute top-4 right-4 z-[60] p-3 rounded-full bg-background/10 hover:bg-background/20 text-background transition-colors backdrop-blur-sm"
             aria-label="Close modal"
           >
             <X className="h-6 w-6" />
@@ -966,36 +469,12 @@ export function PortfolioSection() {
               </div>
 
               {/* Image info */}
-              <div className="absolute bottom-0 left-0 right-0 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-black/50 backdrop-blur-sm rounded-lg p-4">
+              <div className="absolute bottom-0 left-0 right-0 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-foreground/50 backdrop-blur-sm rounded-lg p-4">
                 <div>
-                  <p className="text-white text-sm md:text-base font-semibold">{selectedImage.alt_text}</p>
+                  <p className="text-background text-sm md:text-base font-semibold">{selectedImage.alt_text}</p>
                   <span className="inline-block mt-2 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium uppercase tracking-wide">
                     {selectedImage.category}
                   </span>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Button
-                    variant="secondary"
-                    className="bg-white/90 text-black hover:bg-white whitespace-nowrap"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      handleAddFromBrowse(selectedImage)
-                    }}
-                  >
-                    Donate for this print
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      const contactSection = document.querySelector("#contact")
-                      if (contactSection) {
-                        contactSection.scrollIntoView({ behavior: "smooth" })
-                      }
-                    }}
-                  >
-                    Ask a question
-                  </Button>
                 </div>
               </div>
             </div>

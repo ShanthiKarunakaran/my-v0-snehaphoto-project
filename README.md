@@ -87,7 +87,13 @@ A modern, responsive photography portfolio website built with Next.js, showcasin
    Add your environment variables:
    ```env
    RESEND_API_KEY=your_resend_api_key
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_ANON_KEY=your_supabase_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   ADMIN_PASSWORD=your_secure_admin_password
    ```
+   
+   **Important**: Set a strong `ADMIN_PASSWORD` to protect the admin page at `/admin`. This password is required to upload images and manage the portfolio.
 
 4. **Run the development server**
    ```bash

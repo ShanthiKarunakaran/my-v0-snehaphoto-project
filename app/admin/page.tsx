@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Upload, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon } from "lucide-react"
+import { Upload, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Lock } from "lucide-react"
 
 interface UploadedFile {
   file: File
@@ -15,6 +15,11 @@ interface UploadedFile {
 }
 
 export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState("")
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [authError, setAuthError] = useState("")
+  
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [category, setCategory] = useState("Portraits")
   const [folder, setFolder] = useState("photos")
@@ -26,6 +31,48 @@ export default function AdminPage() {
     type: null,
     message: "",
   })
+
+  // Check if already authenticated on page load
+  useEffect(() => {
+    const authStatus = sessionStorage.getItem('admin_authenticated')
+    if (authStatus === 'true') {
+      setIsAuthenticated(true)
+    }
+    setIsCheckingAuth(false)
+  }, [])
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setAuthError("")
+    
+    try {
+      const response = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setIsAuthenticated(true)
+        sessionStorage.setItem('admin_authenticated', 'true')
+        setPassword("")
+      } else {
+        setAuthError(data.error || 'Invalid password')
+      }
+    } catch (error) {
+      setAuthError('Failed to authenticate. Please try again.')
+    }
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    sessionStorage.removeItem('admin_authenticated')
+    setPassword("")
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -221,14 +268,77 @@ export default function AdminPage() {
     }
   }
 
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <div className="max-w-md w-full bg-card border border-border rounded-lg p-8 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <Lock className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold">Admin Access</h1>
+          </div>
+          <p className="text-muted-foreground mb-6">
+            Please enter the admin password to access this page.
+          </p>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium mb-2">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter admin password"
+                className="w-full"
+                required
+              />
+            </div>
+            {authError && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/20">
+                <AlertCircle className="h-4 w-4" />
+                <p className="text-sm">{authError}</p>
+              </div>
+            )}
+            <Button type="submit" className="w-full" size="lg">
+              Login
+            </Button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  // Show admin content if authenticated
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-zinc-950/30 py-20 px-6">
       <div className="max-w-2xl mx-auto">
         <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
-          <h1 className="text-3xl font-bold mb-2">Bulk Upload Images</h1>
-          <p className="text-muted-foreground mb-8">
-            Upload multiple images to Supabase Storage and add them to your portfolio database.
-          </p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Bulk Upload Images</h1>
+              <p className="text-muted-foreground">
+                Upload multiple images to Supabase Storage and add them to your portfolio database.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="ml-4"
+            >
+              Logout
+            </Button>
+          </div>
 
           <div className="space-y-6">
             {/* File Input - Multiple */}

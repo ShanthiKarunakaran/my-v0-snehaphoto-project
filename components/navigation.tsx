@@ -5,7 +5,6 @@ import { Menu, X, Mail } from "lucide-react"
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button"
-import ThemeToggle from "@/components/ui/theme-toggle"
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -60,14 +59,9 @@ export function Navigation() {
                 </a>
               ))}
             </div>
-
-            {/* Theme Toggle */}
-            <div className="ml-2">
-              <ThemeToggle />
-            </div>
           </div>
 
-          {/* Mobile Social Icons, Theme Toggle & Menu Button */}
+          {/* Mobile Social Icons & Menu Button */}
           <div className="md:hidden flex items-center gap-4 relative z-10">
             {socialLinks.map((social) => (
               <a
@@ -81,9 +75,6 @@ export function Navigation() {
                 <social.icon className="w-4 h-4" />
               </a>
             ))}
-            <div className="relative z-10">
-              <ThemeToggle />
-            </div>
             <Button
               variant="ghost"
               size="icon"

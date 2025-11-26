@@ -26,17 +26,6 @@ const techniques = [
     external: true
   },
   {
-    id: "photomontage",
-    title: "Photomontage and Surrealism",
-    description: "I combine traditional photography with digital manipulation, photomontage, and surrealistic approaches to push creative boundaries.",
-    icon: Camera,
-    color: "text-secondary",
-    bgColor: "bg-secondary/10",
-    borderColor: "border-secondary/40",
-    href: "https://snehaarunphotographyii.weebly.com/photomontage.html",
-    external: true
-  },
-  {
     id: "alternate-techniques",
     title: "Alternate Techniques",
     description: "Exploring unconventional approaches to photography through experimental methods and creative processes.",
@@ -59,12 +48,6 @@ const photoJournals = [
   {
     title: "Photo Journal: Color Theory",
     description: "My journey understanding color relationships in photography",
-    href: "https://snehaarunphotographyii.weebly.com/photo-journals.html",
-    external: true
-  },
-  {
-    title: "Photo Journal: Photomontage",
-    description: "Behind-the-scenes of my experimental and surreal work",
     href: "https://snehaarunphotographyii.weebly.com/photo-journals.html",
     external: true
   },
