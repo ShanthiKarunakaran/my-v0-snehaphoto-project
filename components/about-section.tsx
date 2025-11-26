@@ -22,19 +22,19 @@ export function AboutSection() {
               through my lens—from still life to portraits of family and friends. 
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-             I've photographed several photoshoots featured in my <a href="#portfolio?category=Portraits" onClick={() => console.log("Gallery link clicked! Hash before:", window.location.hash)} className="text-primary hover:underline">gallery</a>, where you can see my work and style.
+             I have photographed several photoshoots featured in my <a href="#portfolio?category=Portraits" onClick={() => console.log("Gallery link clicked! Hash before:", window.location.hash)} className="text-primary hover:underline">gallery</a>, where you can see my work and style.
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Services</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              I'm offering photoshoots for senior portraits, headshots, "choose-your-own-theme" portraits, and more!
+              I am offering photoshoots for senior portraits, headshots, "choose-your-own-theme" portraits, and more!
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Mission</h3>
-            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">I also sell digital prints — and all proceeds are donated to <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper International</a>, a nonprofit
-              organization that funds education, housing, and more for low-income girls in India. I'm an active
+            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">All proceeds are donated to <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper International</a>, a nonprofit
+              organization that funds education, housing, and more for low-income girls in India. I am an active
               volunteer with this organization, and every donation helps bring another girl's dream to life.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              <a href="#contact" className="text-primary hover:underline">Contact me</a> to book a shoot/buy a digial print or ask any questions — I'd love to hear from you!
+              <a href="#contact" className="text-primary hover:underline">Contact me</a> to book a shoot or ask any questions.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               If you like to learn more about my work process, check out <a href="https://snehaarunphotographyii.weebly.com/choice.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

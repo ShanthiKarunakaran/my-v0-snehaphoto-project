@@ -63,7 +63,7 @@ export function Footer() {
               <span className="sm:hidden">All rights reserved. </span>
               <span className="hidden sm:inline">All proceeds support charitable organization </span>
               <span className="sm:hidden">Proceeds support </span>
-              <a href="https://www.oneprosper.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">oneprosper.org</a>
+              <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper</a>
             </div>
           </div>
 

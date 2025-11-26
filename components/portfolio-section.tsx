@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import { Sparkles, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,7 @@ export function PortfolioSection() {
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Function to fetch images from the API
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -78,7 +78,7 @@ export function PortfolioSection() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, selectedCategory]);
 
 
 
@@ -144,7 +144,7 @@ export function PortfolioSection() {
   // useEffect to fetch images when component mounts or category/page changes
   useEffect(() => {
     fetchImages();
-  }, [page, selectedCategory]); // Run when page or selectedCategory changes
+  }, [fetchImages]); // Run when fetchImages changes (which depends on page and selectedCategory)
 
   // Reset page to 1 when category changes
   useEffect(() => {
@@ -341,17 +341,19 @@ export function PortfolioSection() {
                         {image.category || "Uncategorized"}
                       </p>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-full bg-background/90 text-foreground hover:bg-background"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        setSelectedImage(image)
-                      }}
-                    >
-                      View
-                    </Button>
+                    <div className="flex justify-center">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="bg-background/90 text-foreground hover:bg-background"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setSelectedImage(image)
+                        }}
+                      >
+                        View
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>

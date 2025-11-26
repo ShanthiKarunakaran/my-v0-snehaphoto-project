@@ -19,7 +19,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: "Thien Hong",
     role: "Portrait Client",
     quote:
-      "The photoshoot is one of my best experiences to date! Sneha really listened and incorporated my ideas into the photoshoot. She is so open to all concepts, and works very hard to fully research the concepts. Me and my friend opted for a k-pop style photoshoot, and Sneha executed what we had envisioned so well. I will definitely do this again. I can't state how amazing the experience truly was.",
+      "The photoshoot is one of my best experiences to date! Sneha really listened and incorporated my ideas into the photoshoot. She is so open to all concepts, and works very hard to fully research the concepts. Me and my friend opted for a k-pop style photoshoot, and Sneha executed what we had envisioned so well. I will definitely do this again. I can&apos;t state how amazing the experience truly was.",
     avatarSrc: "/photos/aboutMe/sneha-silhouette-favicon.png",
   },
   {

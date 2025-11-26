@@ -269,14 +269,16 @@ export function ContactSection() {
                 </div>
               )}
 
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </Button>
+              <div className="flex justify-center">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 px-8 shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
+              </div>
               </form>
             </div>
           </div>
@@ -291,7 +293,7 @@ export function ContactSection() {
                 Donate
               </h3>
               <p className="text-muted-foreground text-lg leading-relaxed mb-6 text-pretty">
-                Support OneProsper International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
+                Support <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper</a> International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
               </p>
             </div>
             
@@ -309,19 +311,21 @@ export function ContactSection() {
                   </div>
                 </div>
                 
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                >
-                  <a
-                    href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                <div className="flex justify-center">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 px-8 shadow-lg hover:shadow-xl transition-all hover:scale-105"
                   >
-                    Donate via PayPal
-                  </a>
-                </Button>
+                    <a
+                      href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Donate via PayPal
+                    </a>
+                  </Button>
+                </div>
                 
                 <p className="text-xs text-center text-muted-foreground">
                   Secure payment through PayPal

@@ -113,12 +113,12 @@ export function HeroSection() {
             <p className="text-xl md:text-2xl text-foreground/80 mb-10 max-w-2xl leading-relaxed">
               Every photoshoot supports a cause – funds{" "}
               <a
-                href="https://www.oneprosper.org"
+                href="https://www.instagram.com/oneprosper/?hl=en"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 hover:underline transition-colors"
               >
-                OneProsper's
+                OneProsper&apos;s
               </a>{" "}
               education projects.
             </p>
