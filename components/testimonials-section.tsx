@@ -5,6 +5,7 @@ type Testimonial = {
   role: string
   quote: string
   avatarSrc: string
+  imageSrc?: string
 }
 
 const TESTIMONIALS: Testimonial[] = [
@@ -13,21 +14,24 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Portrait Client",
     quote:
       "Having my senior pics taken by Sneha was so much fun! We took them at the beach and in a little beach town and they came out so good! I liked her vision for the photos and how she was my hype woman during each pose. Sneha is a very talented and supportive photographer!",
-    avatarSrc: "/photos/aboutMe/sneha-silhouette-favicon.png",
+    avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
+    imageSrc: "/photos/GraduationPhotos/GradPics-ocean.jpg",
   },
   {
     name: "Thien Hong",
     role: "Portrait Client",
     quote:
       "The photoshoot is one of my best experiences to date! Sneha really listened and incorporated my ideas into the photoshoot. She is so open to all concepts, and works very hard to fully research the concepts. Me and my friend opted for a k-pop style photoshoot, and Sneha executed what we had envisioned so well. I will definitely do this again. I can&apos;t state how amazing the experience truly was.",
-    avatarSrc: "/photos/aboutMe/sneha-silhouette-favicon.png",
+    avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
+    imageSrc: "/photos/Portraits/tying-shoes.jpg",
   },
   {
     name: "Ms. Hughes",
     role: "Portrait Client",
     quote:
       "Sneha takes absolute pride in her work. She comes to a shoot with a detailed list of shots, she gives clear and concise directions, and creates beautiful and thoughtful images.",
-    avatarSrc: "/photos/aboutMe/sneha-silhouette-favicon.png",
+    avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
+    imageSrc: "/photos/Portraits/portrait-Bookstore.jpg",
   }
 ]
 
@@ -50,6 +54,16 @@ export function TestimonialsSection() {
               key={t.name}
               className="group relative rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
             >
+              {t.imageSrc && (
+                <div className="relative w-64 h-48 mb-4 rounded-[50%] overflow-hidden bg-background/20 mx-auto">
+                  <Image 
+                    src={t.imageSrc} 
+                    alt={`Photo from ${t.name}'s session`} 
+                    fill 
+                    className="object-contain"
+                  />
+                </div>
+              )}
               <div className="flex items-center gap-4 mb-4">
                 <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/30">
                   <Image src={t.avatarSrc} alt={t.name} fill className="object-cover" />
@@ -61,7 +75,7 @@ export function TestimonialsSection() {
               </div>
 
               <blockquote className="text-sm md:text-base leading-relaxed text-foreground">
-                “{t.quote}”
+                "{t.quote}"
               </blockquote>
 
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-primary/20 transition-colors" />

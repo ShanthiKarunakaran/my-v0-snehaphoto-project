@@ -6,9 +6,10 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { CheckCircle2, AlertCircle, Sparkles } from "lucide-react"
+import { CheckCircle2, AlertCircle, Sparkles, DollarSign, TrendingUp } from "lucide-react"
 import { sendContactEmail } from "@/app/actions/contact"
 import { cn } from "@/lib/utils"
+import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -128,10 +129,6 @@ export function ContactSection() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         <div className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
-            <Sparkles className="h-4 w-4" />
-            <span className="text-sm font-medium">Get in Touch</span>
-          </div>
           <h2
             className="text-4xl md:text-6xl font-bold text-foreground mb-4 text-balance"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -145,7 +142,7 @@ export function ContactSection() {
 
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
           {/* Column 1: Book a Session Form */}
-          <div>
+          <div className="flex flex-col">
             <h3
               className="text-2xl md:text-3xl font-bold text-foreground mb-6"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -154,7 +151,7 @@ export function ContactSection() {
             </h3>
             <div
               className={cn(
-                "bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl transition-all duration-700",
+                "bg-background/60 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-lg shadow-foreground/5 transition-all duration-700",
                 highlightForm && "ring-4 ring-offset-4 ring-offset-background ring-primary/60 shadow-[0_0_0_12px_rgba(244,63,94,0.08)]"
               )}
             >
@@ -284,21 +281,32 @@ export function ContactSection() {
           </div>
 
           {/* Column 2: Donate CTA */}
-          <div className="flex flex-col justify-center space-y-6">
-            <div>
-              <h3
-                className="text-2xl md:text-3xl font-bold text-foreground mb-4"
-                style={{ fontFamily: "var(--font-space-grotesk)" }}
-              >
-                Donate
-              </h3>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-6 text-pretty">
-                Support <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper</a> International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
-              </p>
-            </div>
+          <div className="flex flex-col">
+            <h3
+              className="text-2xl md:text-3xl font-bold text-foreground mb-6"
+              style={{ fontFamily: "var(--font-space-grotesk)" }}
+            >
+              Donate
+            </h3>
+            <p className="text-muted-foreground text-lg leading-relaxed mb-6 text-pretty">
+              Support <SmartOneProsperLink className="text-primary hover:underline">OneProsper</SmartOneProsperLink> International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
+            </p>
             
-            <div className="bg-card/50 backdrop-blur-sm p-8 rounded-3xl border-2 border-border shadow-xl">
-              <div className="space-y-4">
+            <div className="bg-background/60 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-lg shadow-foreground/5">
+              <div className="space-y-6">
+                {/* Donation Impact Stat */}
+                <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-6 border border-primary/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                      <span className="text-sm font-medium text-muted-foreground">Total Raised</span>
+                    </div>
+                    <TrendingUp className="h-4 w-4 text-primary/70" />
+                  </div>
+                  <p className="text-4xl font-bold text-primary mb-1">$115</p>
+                  <p className="text-xs text-muted-foreground">Supporting OneProsper&apos;s education programs</p>
+                </div>
+
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Sparkles className="h-6 w-6 text-primary" />

@@ -4,6 +4,8 @@ import { Space_Grotesk } from "next/font/google"
 import { DM_Sans } from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
+import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 import FilmStrip from "@/components/ui/film-strip"
 
 const spaceGrotesk = Space_Grotesk({
@@ -56,7 +58,9 @@ export default function RootLayout({
         `}</Script>
       </head>
       <body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable} antialiased`}>
+        <Navigation />
         {children}
+        <Footer />
         <FilmStrip />
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
-import { Sparkles, X } from "lucide-react"
+import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { Image as ImageType } from "@/lib/supabase"
@@ -36,7 +36,26 @@ export function PortfolioSection() {
       });
 
       console.log('Fetching images with params:', params.toString());
-      const response = await fetch(`/api/images?${params}`);
+      const response = await fetch(`/api/images?${params}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).catch((fetchError) => {
+        console.error('Network error fetching images:', fetchError);
+        throw new Error('Network error: Unable to connect to server. Please check your internet connection.');
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: `Server error: ${response.status} ${response.statusText}` };
+        }
+        throw new Error(errorData.error || errorData.details || `Failed to fetch images: ${response.status}`);
+      }
+      
       const data = await response.json();
       
       console.log('Images API response:', { 
@@ -164,7 +183,26 @@ export function PortfolioSection() {
     const fetchCategories = async () => {
       try {
         console.log('Fetching categories...')
-        const response = await fetch('/api/categories')
+        const response = await fetch('/api/categories', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).catch((fetchError) => {
+          console.error('Network error fetching categories:', fetchError);
+          throw new Error('Network error: Unable to connect to server.');
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          let errorData;
+          try {
+            errorData = JSON.parse(errorText);
+          } catch {
+            errorData = { error: `Server error: ${response.status}` };
+          }
+          throw new Error(errorData.error || `Failed to fetch categories: ${response.status}`);
+        }
+        
         const data = await response.json()
         console.log('Categories API response:', { ok: response.ok, status: response.status, data })
         
@@ -247,10 +285,6 @@ export function PortfolioSection() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 mb-4">
-              <Sparkles className="h-4 w-4" />
-              <span className="text-sm font-medium">My Work</span>
-            </div>
             <h2
               className="text-4xl md:text-6xl font-bold text-foreground mb-4 text-balance"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -263,8 +297,8 @@ export function PortfolioSection() {
           </div>
 
           {/* Category Filter */}
-          <div className="mb-8 border-b border-border/60 overflow-x-auto">
-            <nav className="flex justify-center gap-6 text-sm font-medium text-muted-foreground">
+          <div className="mb-12">
+            <nav className="flex flex-wrap justify-center gap-3 md:gap-8 px-6 md:px-8 py-4 bg-card/90 backdrop-blur-md rounded-xl border-2 border-border/60 shadow-md">
               {categories.map((category) => {
                 const displayName = category === "All"
                   ? "All"
@@ -282,15 +316,19 @@ export function PortfolioSection() {
                       setSelectedCategory(category)
                     }}
                     className={cn(
-                      "relative pb-3 transition-colors whitespace-nowrap", 
-                      isActive ? "text-foreground" : "hover:text-foreground"
+                      "relative pb-4 pt-2 text-base md:text-lg font-bold transition-all duration-200 whitespace-nowrap",
+                      isActive 
+                        ? "text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
                     )}
                   >
                     {displayName}
                     <span
                       className={cn(
-                        "absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full transition-opacity",
-                        isActive ? "bg-primary opacity-100" : "bg-transparent opacity-0"
+                        "absolute left-0 bottom-0 h-1 w-full rounded-full transition-all duration-200",
+                        isActive 
+                          ? "bg-primary opacity-100" 
+                          : "bg-transparent opacity-0"
                       )}
                     />
                   </button>
@@ -302,36 +340,49 @@ export function PortfolioSection() {
 
           {/* Image Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredImages.map((image, index) => (
-              <div
-                key={image.id}
-                onClick={() => setSelectedImage(image)}
-                className="group relative min-h-[400px] overflow-hidden rounded-2xl bg-card cursor-pointer shadow-md transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                style={{ animationDelay: `${index * 0.1}s`, position: "relative" }}
-              >
-                {image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in') ? (
-                  // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
-                  <img
-                    src={image.cloudinary_url}
-                    alt={image.alt_text}
-                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    onError={(e) => {
-                      // Fallback to placeholder if image fails to load
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder.svg";
-                    }}
-                  />
-                ) : (
-                  <Image
-                    src={image.cloudinary_url || "/placeholder.svg"}
-                    alt={image.alt_text}
-                    fill
-                    className="object-contain transition-transform duration-500 group-hover:scale-105"
-                    unoptimized={!image.cloudinary_url?.startsWith('http')}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                )}
+            {filteredImages.map((image, index) => {
+              // Apply watermarking to all Supabase images
+              const useWatermark = image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in')
+              const imageSrc = useWatermark 
+                ? `/api/watermarked-image?src=${encodeURIComponent(image.cloudinary_url)}&w=1600`
+                : image.cloudinary_url
+
+              return (
+                <div
+                  key={image.id}
+                  onClick={() => setSelectedImage(image)}
+                  className="group relative min-h-[400px] overflow-hidden rounded-2xl bg-card cursor-pointer shadow-md transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                  style={{ animationDelay: `${index * 0.1}s`, position: "relative" }}
+                >
+                  {image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in') ? (
+                    // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
+                    <img
+                      src={imageSrc}
+                      alt={image.alt_text}
+                      className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      onError={(e) => {
+                        // Fallback to original URL if watermark fails, then placeholder
+                        const target = e.target as HTMLImageElement;
+                        if (target.src.includes('/api/watermarked-image')) {
+                          // Try original URL if watermark API failed
+                          target.src = image.cloudinary_url || "/placeholder.svg";
+                        } else {
+                          // Final fallback to placeholder
+                          target.src = "/placeholder.svg";
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={image.cloudinary_url || "/placeholder.svg"}
+                      alt={image.alt_text}
+                      fill
+                      className="object-contain transition-transform duration-500 group-hover:scale-105"
+                      unoptimized={!image.cloudinary_url?.startsWith('http')}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  )}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                   <div className="rounded-2xl bg-foreground/65 backdrop-blur-sm p-4 space-y-3">
@@ -357,7 +408,8 @@ export function PortfolioSection() {
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Pagination UI */}
@@ -447,14 +499,23 @@ export function PortfolioSection() {
               <div className="relative w-full h-full">
                 {selectedImage.cloudinary_url?.includes('supabase.co') || selectedImage.cloudinary_url?.includes('supabase.in') ? (
                   // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
+                  // Apply watermarking to all Supabase images in modal
                   <img
-                    src={selectedImage.cloudinary_url}
+                    src={selectedImage.cloudinary_url
+                      ? `/api/watermarked-image?src=${encodeURIComponent(selectedImage.cloudinary_url)}&w=2000`
+                      : selectedImage.cloudinary_url}
                     alt={selectedImage.alt_text}
                     className="w-full h-full object-contain"
                     onError={(e) => {
-                      // Fallback to placeholder if image fails to load
+                      // Fallback to original URL if watermark fails, then placeholder
                       const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder.svg";
+                      if (target.src.includes('/api/watermarked-image')) {
+                        // Try original URL if watermark API failed
+                        target.src = selectedImage.cloudinary_url || "/placeholder.svg";
+                      } else {
+                        // Final fallback to placeholder
+                        target.src = "/placeholder.svg";
+                      }
                     }}
                   />
                 ) : (

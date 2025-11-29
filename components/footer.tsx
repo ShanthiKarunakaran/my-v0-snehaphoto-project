@@ -1,10 +1,10 @@
-import { Instagram, Mail, Facebook, Heart } from "lucide-react"
+import { Instagram, Mail, Heart } from "lucide-react"
+import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function Footer() {
   const socialLinks = [
     { href: "https://www.instagram.com/snehaa.prints/", icon: Instagram, label: "Instagram" },
-    { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
-    { href: "mailto:hello@photography.com", icon: Mail, label: "Email" },
+    { href: "mailto:shanthi.arun@gmail.com", icon: Mail, label: "Email" },
   ]
 
   return (
@@ -63,7 +63,7 @@ export function Footer() {
               <span className="sm:hidden">All rights reserved. </span>
               <span className="hidden sm:inline">All proceeds support charitable organization </span>
               <span className="sm:hidden">Proceeds support </span>
-              <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper</a>
+              <SmartOneProsperLink className="text-primary hover:underline">OneProsper</SmartOneProsperLink>
             </div>
           </div>
 

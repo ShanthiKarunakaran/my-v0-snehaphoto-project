@@ -1,5 +1,6 @@
 "use client"
 
+import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function AboutSection() {
   return (
@@ -7,9 +8,6 @@ export function AboutSection() {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent mb-4 border border-accent/20">
-              <span className="text-sm font-medium">About Me</span>
-            </div>
             <h2
               className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-balance"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -17,26 +15,27 @@ export function AboutSection() {
               <span className="text-primary">{"About Me"}</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              Since I picked up my camera in middle school, I&apos;ve been on a journey to capture how I see the world
-              through my lens—from still life to portraits of family and friends. 
+              Since I picked up my camera in middle school, I have been on a journey to capture how I see the world
+              through my lens—from still life to portraits of family and friends. I enjoy the process of interacting with my community during the photoshoots and capturing their 
+              personalities and stories.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-             I have photographed several photoshoots featured in my <a href="#portfolio?category=Portraits" onClick={() => console.log("Gallery link clicked! Hash before:", window.location.hash)} className="text-primary hover:underline">gallery</a>, where you can see my work and style.
+             I have photographed several photoshoots featured in my <a href="#portfolio?category=Portraits" onClick={() => console.log("Gallery link clicked! Hash before:", window.location.hash)} className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">gallery</a>, where you can see my work and style.
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Services</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               I am offering photoshoots for senior portraits, headshots, &quot;choose-your-own-theme&quot; portraits, and more!
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Mission</h3>
-            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">All proceeds are donated to <a href="https://www.instagram.com/oneprosper/?hl=en" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OneProsper International</a>, a nonprofit
+            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">All proceeds are donated to <SmartOneProsperLink className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">OneProsper International</SmartOneProsperLink>, a nonprofit
               organization that funds education, housing, and more for low-income girls in India. I am an active
               volunteer with this organization, and every donation helps bring another girl&apos;s dream to life.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              <a href="#contact" className="text-primary hover:underline">Contact me</a> to book a shoot or ask any questions.
+              <a href="#contact" className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">Contact me</a> to book a shoot or ask any questions.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              If you like to learn more about my work process, check out <a href="https://snehaarunphotographyii.weebly.com/choice.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              If you like to learn more about my work process, check out <a href="https://snehaarunphotographyii.weebly.com/choice.html" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">
               My Photography Techniques</a>.
             </p>
           </div>

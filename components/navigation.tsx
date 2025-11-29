@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Menu, X, Mail } from "lucide-react"
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button"
 
@@ -10,17 +10,16 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navItems = [
-    { name: "Portfolio", href: "#portfolio" },
-    { name: "About", href: "#about" },
-    { name: "Testimonials", href: "#testimonials" },
+    { name: "Portfolio", href: "/#portfolio" },
+    { name: "About", href: "/#about" },
+    { name: "Testimonials", href: "/#testimonials" },
     { name: "Techniques", href: "/techniques" },
-    { name: "Contact", href: "#contact" },
+    { name: "Contact", href: "/#contact" },
   ]
 
   const socialLinks = [
    
     { icon: Mail, href: "mailto:shanthi.arun@gmail.com", label: "Email" },
-    { icon: FaFacebook, href: "https://facebook.com", label: "Facebook" },
     { icon: FaInstagram, href: "https://instagram.com/snehaa.prints", label: "Instagram" }
   ]
 

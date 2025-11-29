@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
-import { Camera, ArrowRight } from "lucide-react"
+import { Camera, ArrowRight, DollarSign } from "lucide-react"
 import Image from "next/image"
+import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function HeroSection() {
   return (
@@ -112,18 +113,13 @@ export function HeroSection() {
 
             <p className="text-xl md:text-2xl text-foreground/80 mb-10 max-w-2xl leading-relaxed">
               Every photoshoot supports a cause – funds{" "}
-              <a
-                href="https://www.instagram.com/oneprosper/?hl=en"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:text-primary/80 hover:underline transition-colors"
-              >
+              <SmartOneProsperLink className="text-primary hover:text-primary/80 hover:underline transition-colors">
                 OneProsper&apos;s
-              </a>{" "}
+              </SmartOneProsperLink>{" "}
               education projects.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
               <Button
                 asChild
                 size="lg"
@@ -138,10 +134,25 @@ export function HeroSection() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="text-base px-8 rounded-lg border-2 border-primary/40 bg-card/60 backdrop-blur-sm hover:bg-primary/10 hover:border-primary text-foreground hover:text-primary-foreground transition-all"
+                className="text-base font-bold px-8 py-7 rounded-lg border-[3px] border-primary bg-primary/10 backdrop-blur-sm hover:bg-primary/40 hover:border-primary text-primary hover:text-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105 relative overflow-hidden group"
               >
-                <a href="#contact">Book a Session or Donate</a>
+                <a href="#contact" className="relative z-10">
+                  Book a Session or Donate
+                </a>
               </Button>
+            </div>
+
+            {/* Donation Impact Stat */}
+            <div className="flex items-center gap-4 pt-6 border-t border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-0.5">Amount raised so far</p>
+                  <p className="text-xl font-semibold text-primary">$115</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
