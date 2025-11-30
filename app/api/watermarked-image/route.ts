@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       if (!allowedDomains.some(domain => url.hostname.includes(domain))) {
         return NextResponse.json({ error: 'Invalid image source' }, { status: 400 })
       }
-    } catch (urlError) {
+    } catch {
       // If URL parsing fails, it might be a relative path or invalid URL
       console.error('Invalid URL format:', imageUrl)
       return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
       .toBuffer()
 
     // Return the processed image with caching headers
-    return new NextResponse(processedImage, {
+    return new NextResponse(processedImage as unknown as BodyInit, {
       headers: {
         'Content-Type': 'image/jpeg',
         'Cache-Control': 'public, max-age=31536000, immutable',

@@ -75,7 +75,7 @@ export function TestimonialsSection() {
               </div>
 
               <blockquote className="text-sm md:text-base leading-relaxed text-foreground">
-                "{t.quote}"
+                &quot;{t.quote}&quot;
               </blockquote>
 
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-primary/20 transition-colors" />
