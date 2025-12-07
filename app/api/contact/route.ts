@@ -94,28 +94,29 @@ function hasMinimumWords(text: string, minWords: number = 2): boolean {
   return words.length >= minWords
 }
 
-function getClientIP(request: NextRequest): string {
-  // Get IP from headers (NextRequest doesn't have .ip property)
-  const forwarded = request.headers.get('x-forwarded-for')
-  if (forwarded) {
-    // x-forwarded-for can contain multiple IPs, first one is the original client
-    return forwarded.split(',')[0].trim()
-  }
-  
-  const realIP = request.headers.get('x-real-ip')
-  if (realIP) {
-    return realIP
-  }
-  
-  // Cloudflare/Vercel header
-  const cfIP = request.headers.get('cf-connecting-ip')
-  if (cfIP) {
-    return cfIP
-  }
-  
-  // Fallback if no IP headers are present
-  return 'unknown'
-}
+// IP capture logic commented out - not needed for simple contact form
+// function getClientIP(request: NextRequest): string {
+//   // Get IP from headers (NextRequest doesn't have .ip property)
+//   const forwarded = request.headers.get('x-forwarded-for')
+//   if (forwarded) {
+//     // x-forwarded-for can contain multiple IPs, first one is the original client
+//     return forwarded.split(',')[0].trim()
+//   }
+//   
+//   const realIP = request.headers.get('x-real-ip')
+//   if (realIP) {
+//     return realIP
+//   }
+//   
+//   // Cloudflare/Vercel header
+//   const cfIP = request.headers.get('cf-connecting-ip')
+//   if (cfIP) {
+//     return cfIP
+//   }
+//   
+//   // Fallback if no IP headers are present
+//   return 'unknown'
+// }
 
 function escapeHtml(text: string): string {
   const map: Record<string, string> = {
@@ -153,7 +154,7 @@ export async function POST(request: NextRequest) {
 
     // Honeypot check - if this field is filled, it's a bot
     if (website) {
-      console.warn('Spam detected: honeypot field filled', { email, ip: getClientIP(request) })
+      console.warn('Spam detected: honeypot field filled', { email })
       return NextResponse.json(
         { success: false, error: 'Invalid submission detected' },
         { status: 400 }
@@ -293,7 +294,7 @@ export async function POST(request: NextRequest) {
     // Spam content detection
     const fullText = `${trimmedName} ${trimmedEmail} ${trimmedMessage}`.toLowerCase()
     if (isSpamContent(fullText)) {
-      console.warn('Spam detected: suspicious keywords found', { email: trimmedEmail, ip: getClientIP(request) })
+      console.warn('Spam detected: suspicious keywords found', { email: trimmedEmail })
       // Don't reveal we detected spam, just fail silently
       return NextResponse.json(
         { success: false, error: 'Unable to send message. Please try again later.' },
@@ -301,29 +302,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // IP-based rate limiting commented out - not needed for simple contact form
     // Rate limiting by IP
-    const clientIP = getClientIP(request)
-    const rateLimitKey = `contact:${clientIP}`
-    const now = Date.now()
-    const rateLimit = rateLimitStore.get(rateLimitKey)
+    // const clientIP = getClientIP(request)
+    // const rateLimitKey = `contact:${clientIP}`
+    // const now = Date.now()
+    // const rateLimit = rateLimitStore.get(rateLimitKey)
 
-    if (rateLimit) {
-      if (now < rateLimit.resetTime) {
-        if (rateLimit.count >= 3) {
-          console.warn('Rate limit exceeded', { ip: clientIP, count: rateLimit.count })
-          return NextResponse.json(
-            { success: false, error: 'Too many requests. Please try again later.' },
-            { status: 429 }
-          )
-        }
-        rateLimit.count += 1
-      } else {
-        // Reset expired rate limit
-        rateLimitStore.set(rateLimitKey, { count: 1, resetTime: now + 3600000 }) // 1 hour
-      }
-    } else {
-      rateLimitStore.set(rateLimitKey, { count: 1, resetTime: now + 3600000 })
-    }
+    // if (rateLimit) {
+    //   if (now < rateLimit.resetTime) {
+    //     if (rateLimit.count >= 3) {
+    //       console.warn('Rate limit exceeded', { ip: clientIP, count: rateLimit.count })
+    //       return NextResponse.json(
+    //         { success: false, error: 'Too many requests. Please try again later.' },
+    //         { status: 429 }
+    //       )
+    //     }
+    //     rateLimit.count += 1
+    //   } else {
+    //     // Reset expired rate limit
+    //     rateLimitStore.set(rateLimitKey, { count: 1, resetTime: now + 3600000 }) // 1 hour
+    //   }
+    // } else {
+    //   rateLimitStore.set(rateLimitKey, { count: 1, resetTime: now + 3600000 })
+    // }
+    
+    const now = Date.now()
 
     // Rate limiting by email
     const emailRateLimitKey = `contact:email:${trimmedEmail}`
@@ -350,7 +354,7 @@ export async function POST(request: NextRequest) {
     if (timestamp) {
       const timeSpent = (now - timestamp) / 1000
       if (timeSpent < 3) {
-        console.warn('Spam detected: form filled too quickly', { timeSpent, email: trimmedEmail, ip: clientIP })
+        console.warn('Spam detected: form filled too quickly', { timeSpent, email: trimmedEmail })
         return NextResponse.json(
           { success: false, error: 'Please take your time filling out the form.' },
           { status: 400 }
@@ -389,7 +393,6 @@ export async function POST(request: NextRequest) {
         <p><strong>Interested in photoshoot:</strong> ${interestedInPhotoshoot === 'yes' ? 'Yes' : 'No'}</p>
         ${interestedInPhotoshoot === 'yes' ? `<p><strong>Photoshoot types:</strong> ${escapeHtml(photoshootTypes.join(', '))}</p>` : ''}
         <p><strong>Donation amount:</strong> ${escapeHtml(donationAmount ? (donationAmount.startsWith('$') ? donationAmount : `$${donationAmount}`) : 'Not specified')}</p>
-        <p><strong>IP Address:</strong> ${escapeHtml(clientIP)}</p>
         <p><strong>Time Spent:</strong> ${timestamp ? Math.round((now - timestamp) / 1000) : 'N/A'} seconds</p>
         <p><strong>Message:</strong></p>
         <p>${escapeHtml(trimmedMessage).replace(/\n/g, '<br>')}</p>
