@@ -95,20 +95,25 @@ function hasMinimumWords(text: string, minWords: number = 2): boolean {
 }
 
 function getClientIP(request: NextRequest): string {
+  // Get IP from headers (NextRequest doesn't have .ip property)
   const forwarded = request.headers.get('x-forwarded-for')
-  const realIP = request.headers.get('x-real-ip')
-  
   if (forwarded) {
+    // x-forwarded-for can contain multiple IPs, first one is the original client
     return forwarded.split(',')[0].trim()
   }
+  
+  const realIP = request.headers.get('x-real-ip')
   if (realIP) {
     return realIP
   }
-  // Fallback: try to get from cf-connecting-ip (Cloudflare) or other headers
+  
+  // Cloudflare/Vercel header
   const cfIP = request.headers.get('cf-connecting-ip')
   if (cfIP) {
     return cfIP
   }
+  
+  // Fallback if no IP headers are present
   return 'unknown'
 }
 
