@@ -105,7 +105,12 @@ function getClientIP(request: NextRequest): string {
   if (realIP) {
     return realIP
   }
-  return request.ip || 'unknown'
+  // Fallback: try to get from cf-connecting-ip (Cloudflare) or other headers
+  const cfIP = request.headers.get('cf-connecting-ip')
+  if (cfIP) {
+    return cfIP
+  }
+  return 'unknown'
 }
 
 function escapeHtml(text: string): string {
