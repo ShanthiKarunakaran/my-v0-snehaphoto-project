@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CheckCircle2, AlertCircle, Sparkles, DollarSign, TrendingUp } from "lucide-react"
-import { sendContactEmail } from "@/app/actions/contact"
+// Form now submits to /api/contact API route
 import { cn } from "@/lib/utils"
 import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
@@ -15,9 +15,12 @@ export function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    printDetails: "",
+    interestedInPhotoshoot: "", // "yes" or "no"
+    photoshootTypes: [] as string[], // Array of selected photoshoot types
     donationAmount: "",
+    donationType: "" as "" | "preset" | "custom", // Track if using preset or custom
     message: "",
+    website: "", // Honeypot field - hidden from users
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
@@ -27,25 +30,150 @@ export function ContactSection() {
   const [highlightForm, setHighlightForm] = useState(false)
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hasAppliedPrefillRef = useRef(false)
+  const formStartTimeRef = useRef<number | null>(null)
+
+  // Track when form becomes visible/interactive
+  useEffect(() => {
+    if (!formStartTimeRef.current) {
+      formStartTimeRef.current = Date.now()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Honeypot check - if this field is filled, it's a bot
+    if (formData.website) {
+      console.warn("Spam detected: honeypot field filled")
+      setSubmitStatus({
+        type: "error",
+        message: "Invalid submission detected.",
+      })
+      return
+    }
+
+    // Time-based validation - if form filled too quickly (< 3 seconds), likely a bot
+    if (formStartTimeRef.current) {
+      const timeSpent = (Date.now() - formStartTimeRef.current) / 1000
+      if (timeSpent < 3) {
+        console.warn("Spam detected: form filled too quickly")
+        setSubmitStatus({
+          type: "error",
+          message: "Please take your time filling out the form.",
+        })
+        return
+      }
+    }
+
+    // Validate interestedInPhotoshoot (required)
+    if (!formData.interestedInPhotoshoot) {
+      setSubmitStatus({
+        type: "error",
+        message: "Please indicate if you're interested in a photoshoot.",
+      })
+      return
+    }
+
+    // If Yes, validate that at least one photoshoot type is selected
+    if (formData.interestedInPhotoshoot === "yes" && formData.photoshootTypes.length === 0) {
+      setSubmitStatus({
+        type: "error",
+        message: "Please select at least one type of photoshoot you're interested in.",
+      })
+      return
+    }
+
+    // If Yes, donation amount is required
+    if (formData.interestedInPhotoshoot === "yes") {
+      if (!formData.donationAmount || !formData.donationAmount.trim()) {
+        setSubmitStatus({
+          type: "error",
+          message: "Please select a donation amount or choose Custom to enter your own.",
+        })
+        return
+      }
+    }
+
+    // Validate donation amount if provided
+    if (formData.donationAmount && formData.donationAmount.trim()) {
+      const donationValue = formData.donationAmount.trim()
+      // Remove currency symbols and whitespace
+      const cleanedDonation = donationValue.replace(/[$,\s]/g, '')
+      const donationNumber = parseFloat(cleanedDonation)
+      
+      if (isNaN(donationNumber)) {
+        setSubmitStatus({
+          type: "error",
+          message: "Please enter a valid donation amount (e.g., $35 or 35).",
+        })
+        return
+      }
+
+      if (donationNumber <= 0) {
+        setSubmitStatus({
+          type: "error",
+          message: "Donation amount must be greater than $0.",
+        })
+        return
+      }
+
+      if (donationNumber > 10000) {
+        setSubmitStatus({
+          type: "error",
+          message: "Donation amount seems unusually high. Please contact directly for large donations.",
+        })
+        return
+      }
+
+      if (donationNumber < 1) {
+        setSubmitStatus({
+          type: "error",
+          message: "Donation amount must be at least $1.",
+        })
+        return
+      }
+    }
+
+    // Content validation
+    const messageLength = formData.message.length
+    if (messageLength < 10) {
+      setSubmitStatus({
+        type: "error",
+        message: "Please provide a more detailed message (at least 10 characters).",
+      })
+      return
+    }
+
+    if (messageLength > 5000) {
+      setSubmitStatus({
+        type: "error",
+        message: "Message is too long. Please keep it under 5000 characters.",
+      })
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: "" })
 
     try {
-      const composedMessage = [
-        `Print details: ${formData.printDetails || "Not specified"}`,
-        `Donation amount: ${formData.donationAmount || "Not specified"}`,
-        "",
-        formData.message,
-      ].join("\n")
-
-      const result = await sendContactEmail({
-        name: formData.name,
-        email: formData.email,
-        message: composedMessage,
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          interestedInPhotoshoot: formData.interestedInPhotoshoot,
+          photoshootTypes: formData.photoshootTypes,
+          donationAmount: formData.donationAmount,
+          website: formData.website, // Honeypot field
+          timestamp: formStartTimeRef.current || Date.now(),
+        }),
       })
+
+      const result = await response.json()
 
       if (result.success) {
         setSubmitStatus({
@@ -53,7 +181,8 @@ export function ContactSection() {
           message: "Thank you for your message! I'll get back to you soon.",
         })
         // Reset form
-        setFormData({ name: "", email: "", printDetails: "", donationAmount: "", message: "" })
+        setFormData({ name: "", email: "", interestedInPhotoshoot: "", photoshootTypes: [], donationAmount: "", donationType: "", message: "", website: "" })
+        formStartTimeRef.current = Date.now() // Reset timer for next submission
       } else {
         setSubmitStatus({
           type: "error",
@@ -96,11 +225,12 @@ export function ContactSection() {
 
       setFormData((prev) => ({
         ...prev,
-        printDetails: printParam ? decodeURIComponent(printParam) : prev.printDetails,
+        interestedInPhotoshoot: printParam ? "yes" : prev.interestedInPhotoshoot,
+        photoshootTypes: printParam ? [decodeURIComponent(printParam)] : prev.photoshootTypes,
         donationAmount: donationParam ? decodeURIComponent(donationParam) : prev.donationAmount,
         message:
           typeParam === "digital-print" && !prev.message
-            ? "Hi Sneha! I’d love to purchase this digital print."
+            ? "Hi Sneha! I'd love to purchase this digital print."
             : prev.message,
       }))
 
@@ -158,7 +288,7 @@ export function ContactSection() {
               <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-bold text-foreground mb-2">
-                  Your Name
+                  Your Name <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="name"
@@ -174,7 +304,7 @@ export function ContactSection() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-bold text-foreground mb-2">
-                  Your Email
+                  Your Email <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="email"
@@ -189,38 +319,160 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="print-details" className="block text-sm font-bold text-foreground mb-2">
-                  Are you interested in a photoshoot?
+                <label className="block text-sm font-bold text-foreground mb-2">
+                  Are you interested in a photoshoot? <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  id="print-details"
-                  type="text"
-                  placeholder="e.g. Photoshoot – Senior portraits"
-                  value={formData.printDetails}
-                  onChange={(e) => setFormData({ ...formData, printDetails: e.target.value })}
-                  className="bg-background border-2 rounded-xl"
-                  disabled={isSubmitting}
-                />
-                {/* <p className="text-xs text-muted-foreground mt-2">
-                  Mention the exact print (name/link) or describe the type of photoshoot you’re looking for.
-                </p> */}
+                <div className="flex gap-4 mb-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="interestedInPhotoshoot"
+                      value="yes"
+                      checked={formData.interestedInPhotoshoot === "yes"}
+                      onChange={(e) => setFormData({ ...formData, interestedInPhotoshoot: e.target.value, photoshootTypes: [] })}
+                      className="w-4 h-4 text-primary border-2 border-border focus:ring-primary"
+                      disabled={isSubmitting}
+                      required
+                    />
+                    <span className="text-foreground">Yes</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="interestedInPhotoshoot"
+                      value="no"
+                      checked={formData.interestedInPhotoshoot === "no"}
+                      onChange={(e) => setFormData({ ...formData, interestedInPhotoshoot: e.target.value, photoshootTypes: [] })}
+                      className="w-4 h-4 text-primary border-2 border-border focus:ring-primary"
+                      disabled={isSubmitting}
+                      required
+                    />
+                    <span className="text-foreground">No</span>
+                  </label>
+                </div>
+
+                {/* Show options if Yes */}
+                {formData.interestedInPhotoshoot === "yes" && (
+                  <div className="mb-4 p-4 rounded-xl bg-background/40 border border-border/50">
+                    <label className="block text-sm font-semibold text-foreground mb-3">
+                      What type of photoshoot are you interested in? <span className="text-destructive">*</span>
+                    </label>
+                    <div className="space-y-2">
+                      {[
+                        "Senior Portraits",
+                        "Headshots",
+                        "Portrait Session",
+                        "Graduation Photos",
+                        "Family Photos",
+                        "Event Photography",
+                        "Other (specify in message)",
+                      ].map((type) => (
+                        <label key={type} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.photoshootTypes.includes(type)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFormData({
+                                  ...formData,
+                                  photoshootTypes: [...formData.photoshootTypes, type],
+                                })
+                              } else {
+                                setFormData({
+                                  ...formData,
+                                  photoshootTypes: formData.photoshootTypes.filter((t) => t !== type),
+                                })
+                              }
+                            }}
+                            className="w-4 h-4 text-primary border-2 border-border rounded focus:ring-primary"
+                            disabled={isSubmitting}
+                          />
+                          <span className="text-foreground text-sm">{type}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Show message if No */}
+                {formData.interestedInPhotoshoot === "no" && (
+                  <div className="mb-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                    <p className="text-sm text-foreground">
+                      No worries, feel free to simply send me a message.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div>
-                <label htmlFor="donation-amount" className="block text-sm font-bold text-foreground mb-2">
+                <label className="block text-sm font-bold text-foreground mb-2">
                   Donation amount (PayPal)
+                  {formData.interestedInPhotoshoot === "yes" && (
+                    <span className="text-destructive"> *</span>
+                  )}
                 </label>
-                <Input
-                  id="donation-amount"
-                  type="text"
-                  placeholder="e.g. $35"
-                  value={formData.donationAmount}
-                  onChange={(e) => setFormData({ ...formData, donationAmount: e.target.value })}
-                  className="bg-background border-2 rounded-xl"
-                  disabled={isSubmitting}
-                />
+                
+                {/* Preset donation buttons */}
+                <div className="flex flex-wrap gap-3 mb-3">
+                  {[
+                    { label: "$15", value: "15" },
+                    { label: "$35", value: "35" },
+                    { label: "$50", value: "50" },
+                    { label: "Custom", value: "custom" },
+                  ].map((preset) => (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => {
+                        if (preset.value === "custom") {
+                          setFormData({
+                            ...formData,
+                            donationType: "custom",
+                            donationAmount: "",
+                          })
+                        } else {
+                          setFormData({
+                            ...formData,
+                            donationType: "preset",
+                            donationAmount: preset.value,
+                          })
+                        }
+                      }}
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                        formData.donationType === "preset" && formData.donationAmount === preset.value
+                          ? "bg-primary text-primary-foreground shadow-lg"
+                          : preset.value === "custom" && formData.donationType === "custom"
+                          ? "bg-primary text-primary-foreground shadow-lg"
+                          : "bg-background/60 border-2 border-border text-foreground hover:border-primary hover:bg-primary/10"
+                      }`}
+                      disabled={isSubmitting}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Custom input - only show when Custom is selected */}
+                {formData.donationType === "custom" && (
+                  <div className="mb-3">
+                    <Input
+                      id="donation-amount"
+                      type="text"
+                      placeholder="e.g. $25"
+                      value={formData.donationAmount}
+                      onChange={(e) => setFormData({ ...formData, donationAmount: e.target.value })}
+                      required={formData.interestedInPhotoshoot === "yes"}
+                      className="bg-background border-2 rounded-xl"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                )}
+
                 <p className="text-xs text-muted-foreground mt-2">
-                  Donations are processed through PayPal at{" "}
+                  {formData.donationType === "custom" || formData.donationType === ""
+                    ? "You can choose an amount above or type your own. "
+                    : ""}
+                  Donations support OneProsper&apos;s education projects. Donations are processed through PayPal at{" "}
                   <a
                     href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
                     target="_blank"
@@ -235,7 +487,7 @@ export function ContactSection() {
 
               <div>
                 <label htmlFor="message" className="block text-sm font-bold text-foreground mb-2">
-                  Message
+                  Message <span className="text-destructive">*</span>
                 </label>
                 <Textarea
                   id="message"
@@ -244,8 +496,26 @@ export function ContactSection() {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
                   rows={6}
+                  maxLength={5000}
                   className="bg-background border-2 rounded-xl resize-none"
                   disabled={isSubmitting}
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {formData.message.length}/5000 characters
+                </p>
+              </div>
+
+              {/* Honeypot field - hidden from users, bots will fill it */}
+              <div style={{ position: "absolute", left: "-9999px", opacity: 0, pointerEvents: "none" }}>
+                <label htmlFor="website">Website (leave blank)</label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                 />
               </div>
 
@@ -253,16 +523,20 @@ export function ContactSection() {
                 <div
                   className={`flex items-center gap-2 p-4 rounded-xl ${
                     submitStatus.type === "success"
-                      ? "bg-accent/20 text-accent-foreground border-2 border-accent"
-                      : "bg-destructive/20 text-destructive-foreground border-2 border-destructive"
+                      ? "bg-accent/20 border-2 border-accent"
+                      : "bg-destructive/20 border-2 border-destructive"
                   }`}
                 >
                   {submitStatus.type === "success" ? (
-                    <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-accent" />
                   ) : (
-                    <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                    <AlertCircle className="h-5 w-5 flex-shrink-0 text-destructive" />
                   )}
-                  <p className="text-sm font-medium">{submitStatus.message}</p>
+                  <p className={`text-sm font-medium ${
+                    submitStatus.type === "success" 
+                      ? "text-accent" 
+                      : "text-destructive"
+                  }`}>{submitStatus.message}</p>
                 </div>
               )}
 

@@ -1,7 +1,44 @@
-import { Instagram, Mail, Heart } from "lucide-react"
+"use client"
+
+import { useState, useEffect } from "react"
+import { Instagram, Mail, Heart, X } from "lucide-react"
+import Image from "next/image"
 import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function Footer() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  const handleOpenModal = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setImageError(false)
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isModalOpen) {
+        handleCloseModal()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isModalOpen])
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isModalOpen])
   const socialLinks = [
     { href: "https://www.instagram.com/snehaa.prints/", icon: Instagram, label: "Instagram" },
     { href: "mailto:shanthi.arun@gmail.com", icon: Mail, label: "Email" },
@@ -54,7 +91,7 @@ export function Footer() {
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
               <span>© {new Date().getFullYear()}</span>
               <span className="hidden sm:inline">—</span>
-              <span>Website designed and developed by <a href="https://github.com/ShanthiKarunakaran" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Shanthi Karunakaran</a></span>
+              <span>Website designed and developed by <a href="https://github.com/ShanthiKarunakaran" onClick={handleOpenModal} className="text-primary hover:underline cursor-pointer">Shanthi Karunakaran</a></span>
               <span className="hidden sm:inline">—</span>
               <span className="hidden sm:inline">All rights reserved.</span>
               <Heart className="h-4 w-4 text-primary fill-primary" />
@@ -71,6 +108,58 @@ export function Footer() {
           <p className="text-xs text-muted-foreground font-medium">{""}</p>
         </div>
       </div>
+
+      {/* GitHub Profile Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 animate-in fade-in duration-200">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-foreground/95 backdrop-blur-sm" onClick={handleCloseModal} />
+
+          {/* Close button */}
+          <button
+            onClick={handleCloseModal}
+            className="absolute top-4 right-4 z-[60] p-3 rounded-full bg-background/10 hover:bg-background/20 text-background transition-colors backdrop-blur-sm"
+            aria-label="Close modal"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          {/* Modal content */}
+          <div className="absolute inset-0 z-[55] flex items-center justify-center p-2 sm:p-3 pointer-events-none">
+            <div
+              className="relative w-full max-w-[98vw] sm:max-w-[90vw] md:max-w-4xl lg:max-w-5xl max-h-[90vh] pointer-events-auto bg-background/60 backdrop-blur-md rounded-2xl border border-border/50 shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-3 sm:p-4 md:p-5">
+                <h3
+                  className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-2 sm:mb-3 text-center"
+                  style={{ fontFamily: "var(--font-space-grotesk)" }}
+                >
+                  Developer Profile
+                </h3>
+                <div className="relative w-full min-h-[250px] sm:min-h-[350px] md:min-h-[450px] rounded-lg overflow-hidden border border-border/50 shadow-lg bg-muted/20">
+                  {imageError ? (
+                    <div className="flex flex-col items-center justify-center h-full p-6 md:p-8 text-center">
+                      <p className="text-muted-foreground mb-4">Image not found</p>
+                      <p className="text-sm text-muted-foreground">Please add your GitHub profile screenshot as:</p>
+                      <code className="text-xs text-primary mt-2 bg-muted px-3 py-1 rounded">/public/photos/aboutMe/github-profile.png</code>
+                    </div>
+                  ) : (
+                    <Image
+                      src="/photos/aboutMe/github-profile.png"
+                      alt="Shanthi Karunakaran GitHub Profile"
+                      fill
+                      className="object-contain"
+                      priority
+                      onError={() => setImageError(true)}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   )
 }

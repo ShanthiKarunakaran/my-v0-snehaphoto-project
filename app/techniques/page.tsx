@@ -47,7 +47,7 @@ const photoJournals = [
   {
     title: "Photo Journal: Color Theory",
     description: "My journey understanding color relationships in photography",
-    href: "https://snehaarunphotographyii.weebly.com/photo-journals.html",
+    href: "https://snehaarunphotographyii.weebly.com/photo-journal-color-theory.html",
     external: true
   },
   {
@@ -168,7 +168,7 @@ export default function TechniquesPage() {
       </section>
 
       {/* Photo Journals Section */}
-      <section className="py-20 px-6 lg:px-8 bg-secondary/30">
+      {/* <section className="py-20 px-6 lg:px-8 bg-secondary/30">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2
@@ -208,10 +208,10 @@ export default function TechniquesPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Artist Statement Section */}
-      <section className="py-20 px-6 lg:px-8">
+      {/* <section className="py-20 px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2
@@ -265,7 +265,7 @@ export default function TechniquesPage() {
           </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }

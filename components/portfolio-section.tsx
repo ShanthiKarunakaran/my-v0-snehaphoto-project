@@ -385,10 +385,10 @@ export function PortfolioSection() {
                   )}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="rounded-2xl bg-foreground/65 backdrop-blur-sm p-4 space-y-3">
+                    <div className="rounded-2xl bg-foreground/80 backdrop-blur-sm p-4 space-y-3">
                     <div>
                       <p className="text-background text-sm font-semibold">{image.alt_text}</p>
-                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-background/70">
+                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-background/90">
                         {image.category || "Uncategorized"}
                       </p>
                     </div>
@@ -532,7 +532,7 @@ export function PortfolioSection() {
               </div>
 
               {/* Image info */}
-              <div className="absolute bottom-0 left-0 right-0 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-foreground/50 backdrop-blur-sm rounded-lg p-4">
+              <div className="absolute bottom-0 left-0 right-0 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-foreground/80 backdrop-blur-sm rounded-lg p-4">
                 <div>
                   <p className="text-background text-sm md:text-base font-semibold">{selectedImage.alt_text}</p>
                   <span className="inline-block mt-2 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium uppercase tracking-wide">

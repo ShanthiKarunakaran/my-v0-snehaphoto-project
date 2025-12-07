@@ -54,15 +54,15 @@ export async function GET(request: NextRequest) {
     const padding = Math.round(targetWidth * 0.025) // 2.5% padding from edges
     const letterSpacing = watermarkFontSize * 0.08 // Elegant letter spacing
 
-    // Create artistic watermark SVG with gradient background and elegant styling
+    // Create artistic watermark SVG with simpler, more reliable styling
     const watermarkSvg = `
       <svg width="${targetWidth}" height="${targetHeight}" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="watermarkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:rgba(255,255,255,0.95);stop-opacity:1" />
-            <stop offset="100%" style="stop-color:rgba(255,255,255,0.85);stop-opacity:1" />
+          <linearGradient id="wmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.95)" stop-opacity="1" />
+            <stop offset="100%" stop-color="rgba(255,255,255,0.85)" stop-opacity="1" />
           </linearGradient>
-          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+          <filter id="wmShadow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
             <feOffset dx="1" dy="1" result="offsetblur"/>
             <feComponentTransfer>
@@ -74,40 +74,30 @@ export async function GET(request: NextRequest) {
             </feMerge>
           </filter>
         </defs>
-        <!-- Subtle background circle/oval for elegance -->
-        <ellipse
-          cx="${targetWidth - padding - watermarkFontSize * 2}"
-          cy="${targetHeight - padding}"
-          rx="${watermarkFontSize * 3.5}"
-          ry="${watermarkFontSize * 1.2}"
-          fill="rgba(0,0,0,0.3)"
-          opacity="0.4"
+        <!-- Subtle background for readability -->
+        <rect
+          x="${targetWidth - padding - watermarkFontSize * 4.5}"
+          y="${targetHeight - padding - watermarkFontSize * 1.5}"
+          width="${watermarkFontSize * 4.5}"
+          height="${watermarkFontSize * 1.8}"
+          rx="${watermarkFontSize * 0.3}"
+          fill="rgba(0,0,0,0.25)"
+          opacity="0.5"
         />
-        <!-- Main watermark text with elegant styling -->
+        <!-- Main watermark text -->
         <text
           x="${targetWidth - padding}"
           y="${targetHeight - padding}"
-          font-family="Georgia, 'Times New Roman', serif"
+          font-family="Arial, Helvetica, sans-serif"
           font-size="${watermarkFontSize}"
-          font-weight="500"
-          font-style="italic"
+          font-weight="600"
           letter-spacing="${letterSpacing}px"
-          fill="url(#watermarkGradient)"
+          fill="url(#wmGrad)"
           text-anchor="end"
           dominant-baseline="bottom"
-          filter="url(#shadow)"
+          filter="url(#wmShadow)"
           opacity="0.9"
         >${watermarkText}</text>
-        <!-- Decorative line/divider -->
-        <line
-          x1="${targetWidth - padding - watermarkFontSize * 4}"
-          y1="${targetHeight - padding + watermarkFontSize * 0.3}"
-          x2="${targetWidth - padding - watermarkFontSize * 0.5}"
-          y2="${targetHeight - padding + watermarkFontSize * 0.3}"
-          stroke="rgba(255,255,255,0.6)"
-          stroke-width="1"
-          opacity="0.7"
-        />
       </svg>
     `
 

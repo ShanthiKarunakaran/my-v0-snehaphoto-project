@@ -59,7 +59,7 @@ export function HeroSection() {
       <div className="max-w-6xl mx-auto relative z-10 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-16">
           {/* Left: Sneha image */}
-          <div className="hidden md:block relative w-full md:max-w-[520px] lg:max-w-[460px] mx-auto lg:mx-0 lg:translate-x-2 mt-6 aspect-[4/5] overflow-visible rotate-[-3deg] lg:rotate-[-5deg] origin-center group cursor-pointer transition-all duration-1000 ease-in-out hover:rotate-[-1deg] hover:scale-105">
+          <div className="hidden md:block relative w-[380px] h-[280px] md:w-[440px] md:h-[320px] lg:w-[500px] lg:h-[360px] mx-auto lg:mx-0 lg:translate-x-2 mt-6 overflow-hidden rounded-[50%] rotate-[-3deg] lg:rotate-[-5deg] origin-center group cursor-pointer transition-all duration-1000 ease-in-out hover:rotate-[-1deg] hover:scale-105">
             {/* Background spotlight to lift silhouette */}
             <div className="pointer-events-none absolute -left-10 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-radial from-primary/60 via-primary/20 to-transparent blur-[90px]" />
             {/* Neutral base spotlight for extra contrast */}
@@ -69,7 +69,7 @@ export function HeroSection() {
               alt="Sneha photographing portraits"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 460px"
-              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] group-hover:opacity-0 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-hide_8s_ease-in-out_infinite]"
+              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] group-hover:opacity-0 transition-opacity duration-1000 ease-in-out"
               priority
             />
             <Image
@@ -77,7 +77,7 @@ export function HeroSection() {
               alt="Sneha photographing portraits"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 460px"
-              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in-out rounded-[50%] animate-[safelight-reveal_8s_ease-in-out_infinite]"
+              className="object-cover hero-object-pos drop-shadow-[0_25px_40px_rgba(0,0,0,0.55)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in-out"
             />
             {/* Artistic oval frame border */}
             <div className="pointer-events-none absolute inset-0 rounded-[50%] border border-primary/15 group-hover:border-primary/25 transition-all duration-1000 ease-in-out blur-[0.5px]" />
@@ -93,10 +93,7 @@ export function HeroSection() {
 
           {/* Right: Text content */}
           <div className="text-left relative">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 mb-6 border border-primary/40 backdrop-blur-sm text-foreground">
-              <Camera className="h-4 w-4" />
-              <span className="text-sm font-medium">Photography with Purpose</span>
-            </div>
+           
 
             <div className="relative inline-block">
               <h1
@@ -111,7 +108,7 @@ export function HeroSection() {
               <div className="pointer-events-none absolute -inset-x-24 top-0 h-full bg-gradient-to-r from-transparent via-primary/15 to-transparent animate-[shine_6s_linear_infinite]" />
             </div>
 
-            <p className="text-xl md:text-2xl text-foreground/80 mb-10 max-w-2xl leading-relaxed">
+            <p className="text-xl md:text-2xl text-foreground mb-10 max-w-2xl leading-relaxed">
               Every photoshoot supports a cause – funds{" "}
               <SmartOneProsperLink className="text-primary hover:text-primary/80 hover:underline transition-colors">
                 OneProsper&apos;s
@@ -149,7 +146,7 @@ export function HeroSection() {
                   <DollarSign className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-0.5">Amount raised so far</p>
+                  <p className="text-xs font-medium text-muted-foreground tracking-wide mb-0.5">Amount raised so far to support OneProsper&apos;s education projects</p>
                   <p className="text-xl font-semibold text-primary">$115</p>
                 </div>
               </div>

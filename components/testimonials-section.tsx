@@ -54,20 +54,27 @@ export function TestimonialsSection() {
               key={t.name}
               className="group relative rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
             >
-              {t.imageSrc && (
-                <div className="relative w-64 h-48 mb-4 rounded-[50%] overflow-hidden bg-background/20 mx-auto">
-                  <Image 
-                    src={t.imageSrc} 
-                    alt={`Photo from ${t.name}'s session`} 
-                    fill 
-                    className="object-contain"
-                  />
-                </div>
-              )}
               <div className="flex items-center gap-4 mb-4">
-                <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/30">
-                  <Image src={t.avatarSrc} alt={t.name} fill className="object-cover" />
-                </div>
+                {t.imageSrc ? (
+                  <div className="relative w-20 h-16 rounded-[50%] overflow-hidden ring-2 ring-primary/30 flex-shrink-0">
+                    <Image 
+                      src={t.imageSrc} 
+                      alt={t.name} 
+                      fill 
+                      className={`object-cover ${
+                        t.name === "Thien Hong" 
+                          ? "object-[center_top]" 
+                          : t.name === "Ms. Hughes"
+                          ? "object-[center_25%]"
+                          : "object-center"
+                      }`}
+                    />
+                  </div>
+                ) : (
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/30">
+                    <Image src={t.avatarSrc} alt={t.name} fill className="object-cover" />
+                  </div>
+                )}
                 <div>
                   <figcaption className="font-semibold text-foreground">{t.name}</figcaption>
                   <div className="text-sm text-muted-foreground">{t.role}</div>
@@ -85,7 +92,7 @@ export function TestimonialsSection() {
       </div>
 
       {/* subtle vignette */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/5" />
     </section>
   )
 }
