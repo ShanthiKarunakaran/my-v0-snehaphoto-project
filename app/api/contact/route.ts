@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
 // In-memory rate limiting store (in production, use Redis or database)
+// IP capture removed - not needed for simple contact form validation
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
 
 // Clean up old entries every 5 minutes
