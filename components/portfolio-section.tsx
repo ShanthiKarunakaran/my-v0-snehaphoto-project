@@ -81,7 +81,13 @@ export function PortfolioSection() {
       if (page === 1) {
         setImages(imagesArray);
       } else {
-        setImages(prev => [...prev, ...imagesArray]);
+        // Only append if we're actually loading more (not resetting)
+        setImages(prev => {
+          // Prevent duplicate images if somehow page state is inconsistent
+          const existingIds = new Set(prev.map((img: ImageType) => img.id));
+          const newImages = imagesArray.filter((img: ImageType) => !existingIds.has(img.id));
+          return [...prev, ...newImages];
+        });
       }
       
       setPagination(data.pagination || {
@@ -165,10 +171,28 @@ export function PortfolioSection() {
     fetchImages();
   }, [fetchImages]); // Run when fetchImages changes (which depends on page and selectedCategory)
 
-  // Reset page to 1 when category changes
+  // Reset page to 1 and clear images when category changes
   useEffect(() => {
     setPage(1);
+    setImages([]); // Clear images when category changes
+    setError(null); // Clear any errors
   }, [selectedCategory]);
+  
+  // Handle browser back/forward navigation - reset state when navigating
+  useEffect(() => {
+    const handlePopState = () => {
+      // When user navigates back/forward, reset to page 1 and clear images
+      // This ensures consistent state when using browser navigation
+      setPage(1);
+      setImages([]);
+      setError(null);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   // Track if categories have been fetched to prevent duplicate fetches
   const categoriesFetchedRef = useRef(false)
@@ -454,7 +478,7 @@ export function PortfolioSection() {
               <div className="text-center space-y-1">
                 <div className="text-sm text-muted-foreground">
                   Showing <span className="font-medium text-foreground">{filteredImages.length}</span> of{' '}
-                  <span className="font-medium text-foreground">{pagination.total}</span> images
+                  <span className="font-medium text-foreground">{Math.max(filteredImages.length, pagination.total)}</span> images
                 </div>
                 {pagination.totalPages > 1 && pagination.totalPages > page && (
                   <div className="text-xs text-muted-foreground">

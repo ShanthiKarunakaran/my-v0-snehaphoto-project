@@ -112,25 +112,19 @@ export async function GET(request: NextRequest) {
     
     const deduplicatedImages = Array.from(imageMap.values())
     
-    // The count from database includes duplicates, but we deduplicate the results
-    // If deduplication removed images (displayed < expected), adjust the total count
-    const displayedCount = deduplicatedImages.length
-    const expectedCount = images?.length || 0
-    const duplicatesRemoved = expectedCount - displayedCount
-    
-    // Adjust total count by subtracting duplicates found on this page
-    // This is an approximation since we only deduplicate the current page
-    const adjustedTotal = duplicatesRemoved > 0 && count
-      ? Math.max(displayedCount, count - duplicatesRemoved)
-      : (count || displayedCount)
+    // Use the original count from database for pagination
+    // The deduplication happens per page, so we can't accurately adjust the total
+    // The frontend will handle showing the correct count based on displayed images
+    // For now, use the original count - the UI will show the actual displayed count
+    const totalCount = count || 0
 
     return NextResponse.json({
       images: deduplicatedImages,
       pagination: {
         page,
         limit,
-        total: adjustedTotal, // Adjusted count after deduplication
-        totalPages: Math.ceil(adjustedTotal / limit)
+        total: totalCount, // Use original database count
+        totalPages: Math.ceil(totalCount / limit)
       }
     })
   } catch (error) {
