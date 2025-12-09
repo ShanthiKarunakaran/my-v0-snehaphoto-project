@@ -111,14 +111,26 @@ export async function GET(request: NextRequest) {
     }
     
     const deduplicatedImages = Array.from(imageMap.values())
+    
+    // The count from database includes duplicates, but we deduplicate the results
+    // If deduplication removed images (displayed < expected), adjust the total count
+    const displayedCount = deduplicatedImages.length
+    const expectedCount = images?.length || 0
+    const duplicatesRemoved = expectedCount - displayedCount
+    
+    // Adjust total count by subtracting duplicates found on this page
+    // This is an approximation since we only deduplicate the current page
+    const adjustedTotal = duplicatesRemoved > 0 && count
+      ? Math.max(displayedCount, count - duplicatesRemoved)
+      : (count || displayedCount)
 
     return NextResponse.json({
       images: deduplicatedImages,
       pagination: {
         page,
         limit,
-        total: count || 0, // Keep original count for pagination
-        totalPages: Math.ceil((count || 0) / limit)
+        total: adjustedTotal, // Adjusted count after deduplication
+        totalPages: Math.ceil(adjustedTotal / limit)
       }
     })
   } catch (error) {
