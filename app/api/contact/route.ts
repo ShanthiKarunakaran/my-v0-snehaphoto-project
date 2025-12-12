@@ -191,16 +191,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // If Yes, donation amount is required
-    if (interestedInPhotoshoot === 'yes') {
-      if (!donationAmount || !donationAmount.trim()) {
-        return NextResponse.json(
-          { success: false, error: 'Please select a donation amount or choose Custom to enter your own' },
-          { status: 400 }
-        )
-      }
-    }
-
     // Name validation
     if (trimmedName.length < 2 || trimmedName.length > 100) {
       return NextResponse.json(

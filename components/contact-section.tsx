@@ -83,18 +83,7 @@ export function ContactSection() {
       return
     }
 
-    // If Yes, donation amount is required
-    if (formData.interestedInPhotoshoot === "yes") {
-      if (!formData.donationAmount || !formData.donationAmount.trim()) {
-        setSubmitStatus({
-          type: "error",
-          message: "Please select a donation amount or choose Custom to enter your own.",
-        })
-        return
-      }
-    }
-
-    // Validate donation amount if provided
+    // Validate donation amount if provided (optional for both Yes and No)
     if (formData.donationAmount && formData.donationAmount.trim()) {
       const donationValue = formData.donationAmount.trim()
       // Remove currency symbols and whitespace
@@ -407,9 +396,6 @@ export function ContactSection() {
               <div>
                 <label className="block text-sm font-bold text-foreground mb-2">
                   Donation amount (PayPal)
-                  {formData.interestedInPhotoshoot === "yes" && (
-                    <span className="text-destructive"> *</span>
-                  )}
                 </label>
                 
                 {/* Preset donation buttons */}
@@ -461,7 +447,6 @@ export function ContactSection() {
                       placeholder="e.g. $25"
                       value={formData.donationAmount}
                       onChange={(e) => setFormData({ ...formData, donationAmount: e.target.value })}
-                      required={formData.interestedInPhotoshoot === "yes"}
                       className="bg-background border-2 rounded-xl"
                       disabled={isSubmitting}
                     />
