@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, X, Mail } from "lucide-react"
 import { FaInstagram } from "react-icons/fa";
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 
@@ -28,8 +29,17 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="#" className="text-xl font-semibold text-white">
-            Sneha&apos;s Photography
+          <a href="#" className="flex items-center gap-3 text-xl font-semibold text-white hover:opacity-80 transition-opacity">
+            <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/20 flex-shrink-0">
+              <Image 
+                src="/photos/aboutMe/sneha-silhouette.png" 
+                alt="Sneha's Photography" 
+                fill 
+                className="object-cover"
+              />
+            </div>
+            <span className="hidden sm:inline">Sneha&apos;s Photography</span>
+            <span className="sm:hidden">Sneha&apos;s</span>
           </a>
 
           {/* Desktop Navigation */}
