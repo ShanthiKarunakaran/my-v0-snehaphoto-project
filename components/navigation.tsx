@@ -29,8 +29,8 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3 text-xl font-semibold text-white hover:opacity-80 transition-opacity">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/20 flex-shrink-0">
+          <a href="#" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity flex-shrink-0">
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full overflow-hidden ring-2 ring-white/20 flex-shrink-0">
               <Image 
                 src="/photos/aboutMe/sneha-silhouette.png" 
                 alt="Sneha's Photography" 
@@ -38,8 +38,10 @@ export function Navigation() {
                 className="object-cover"
               />
             </div>
-            <span className="hidden sm:inline">Sneha&apos;s Photography</span>
-            <span className="sm:hidden">Sneha&apos;s</span>
+            <span className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold whitespace-nowrap">
+              <span className="hidden md:inline">Sneha&apos;s Photography</span>
+              <span className="md:hidden">Sneha&apos;s</span>
+            </span>
           </a>
 
           {/* Desktop Navigation */}
