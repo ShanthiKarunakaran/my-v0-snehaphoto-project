@@ -6,49 +6,64 @@ import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 export function HeroSection() {
   return (
     <section className="relative min-h-[50vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-background">
-      {/* Primary color glow effects */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-primary/25 rounded-full blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
-      {/* Moving glow that sweeps across the image */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-primary/40 rounded-full blur-[140px] animate-[safelight-sweep_8s_ease-in-out_infinite]" />
+      {/* Primary color glow effects - reduced on mobile */}
+      <div className="absolute top-20 left-10 w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-primary/15 sm:bg-primary/20 md:bg-primary/25 rounded-full blur-[80px] sm:blur-[100px] md:blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
+      {/* Moving glow that sweeps across the image - reduced on mobile */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-primary/20 sm:bg-primary/30 md:bg-primary/40 rounded-full blur-[80px] sm:blur-[100px] md:blur-[140px] animate-[safelight-sweep_8s_ease-in-out_infinite]" />
 
       {/* Clothesline string (curved) */}
-      <div className="pointer-events-none absolute left-0 right-0 top-16 z-0 opacity-60">
+      <div className="pointer-events-none absolute left-0 right-0 top-16 z-10 opacity-60">
         <svg className="w-full h-12" viewBox="0 0 100 20" preserveAspectRatio="none">
           <path d="M 0 6 C 20 12, 40 10, 60 6 S 100 5, 100 6" fill="none" stroke="rgb(82 82 91 / 0.6)" strokeWidth="0.6" />
         </svg>
       </div>
 
-      {/* Hanging photos on clothesline */}
-      <div className="absolute top-20 left-0 right-0 flex justify-center gap-8 opacity-60 z-20">
-        <div className="relative group">
-          <div className="w-2 h-8 bg-zinc-700 rounded-full" /> {/* Clothespin */}
-          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-500 mt-2 overflow-hidden relative">
+      {/* Hanging photos on clothesline - mobile: single photo on right, desktop: 3 photos centered */}
+      {/* Mobile: Single photo on right, smaller */}
+      <div className="absolute top-[3.5rem] right-4 sm:right-8 md:hidden opacity-60 z-20">
+        <div className="relative group flex flex-col items-center">
+          {/* Clothespin - positioned to clip the line and photo */}
+          <div className="w-1.5 h-6 sm:w-2 sm:h-8 bg-zinc-700 rounded-full -mb-0.5 z-10" /> {/* Clothespin overlaps line and photo */}
+          {/* Photo - positioned directly below clothespin */}
+          <div className="w-20 h-24 sm:w-24 sm:h-28 bg-zinc-800 border-2 sm:border-[3px] border-zinc-700 shadow-xl sm:shadow-2xl rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-500 overflow-hidden relative -mt-1">
             <Image src="/photos/Portraits/portrait-black-dress.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
           </div>
         </div>
-        <div className="relative group hidden md:block">
-          <div className="w-2 h-8 bg-zinc-700 rounded-full" />
-          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[5deg] hover:rotate-[2deg] transition-transform duration-500 mt-2 overflow-hidden relative">
+      </div>
+      
+      {/* Desktop: 3 photos centered (original layout) */}
+      <div className="hidden md:flex absolute top-[3.5rem] left-0 right-0 justify-center gap-8 opacity-60 z-20">
+        <div className="relative group flex flex-col items-center">
+          {/* Clothespin - positioned to clip the line and photo */}
+          <div className="w-2 h-8 bg-zinc-700 rounded-full -mb-0.5 z-10" /> {/* Clothespin overlaps line and photo */}
+          {/* Photo - positioned directly below clothespin */}
+          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-500 overflow-hidden relative -mt-1">
+            <Image src="/photos/Portraits/portrait-black-dress.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
+          </div>
+        </div>
+        <div className="relative group flex flex-col items-center">
+          <div className="w-2 h-8 bg-zinc-700 rounded-full -mb-0.5 z-10" />
+          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[5deg] hover:rotate-[2deg] transition-transform duration-500 overflow-hidden relative -mt-1">
             <Image src="/photos/Portraits/garden-bench.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
           </div>
         </div>
-        <div className="relative group hidden lg:block">
-          <div className="w-2 h-8 bg-zinc-700 rounded-full" />
-          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-3deg] hover:rotate-[0deg] transition-transform duration-500 mt-2 overflow-hidden relative">
+        <div className="relative group hidden lg:flex flex-col items-center">
+          <div className="w-2 h-8 bg-zinc-700 rounded-full -mb-0.5 z-10" />
+          <div className="w-32 h-40 bg-zinc-800 border-4 border-zinc-700 shadow-2xl rotate-[-3deg] hover:rotate-[0deg] transition-transform duration-500 overflow-hidden relative -mt-1">
             <Image src="/photos/Portraits/stairs-outdoor.jpg" alt="Hanging photo" fill className="object-contain" sizes="128px" />
           </div>
         </div>
       </div>
 
-      {/* Film strip decoration */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-64 bg-zinc-900 border-l-4 border-r-4 border-zinc-700 opacity-30">
+      {/* Film strip decoration - hidden on mobile */}
+      <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-12 h-64 bg-zinc-900 border-l-4 border-r-4 border-zinc-700 opacity-30">
         <div className="flex flex-col justify-around h-full px-1">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="w-full h-4 bg-zinc-800" />
           ))}
         </div>
       </div>
-      <div className="absolute right-0 top-1/3 w-12 h-64 bg-zinc-900 border-l-4 border-r-4 border-zinc-700 opacity-30">
+      <div className="hidden md:block absolute right-0 top-1/3 w-12 h-64 bg-zinc-900 border-l-4 border-r-4 border-zinc-700 opacity-30">
         <div className="flex flex-col justify-around h-full px-1">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="w-full h-4 bg-zinc-800" />
@@ -155,10 +170,10 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Subtle vignette effect */}
-      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-foreground/20 pointer-events-none" />
-      {/* Low fog at bottom for atmosphere */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary/10 via-background/0 to-transparent blur-2xl opacity-70" />
+      {/* Subtle vignette effect - reduced on mobile */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-foreground/10 sm:to-foreground/15 md:to-foreground/20 pointer-events-none" />
+      {/* Low fog at bottom for atmosphere - reduced on mobile */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 sm:h-28 md:h-40 bg-gradient-to-t from-primary/5 sm:from-primary/8 md:from-primary/10 via-background/0 to-transparent blur-xl sm:blur-2xl opacity-50 sm:opacity-60 md:opacity-70" />
     </section>
   )
 }
