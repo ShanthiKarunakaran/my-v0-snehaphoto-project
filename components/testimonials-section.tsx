@@ -37,9 +37,9 @@ const TESTIMONIALS: Testimonial[] = [
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="relative py-20 px-6 lg:px-8 bg-gradient-to-b from-background to-zinc-950/30">
+    <section id="testimonials" className="relative py-12 md:py-20 px-6 lg:px-8 bg-gradient-to-b from-background to-zinc-950/30">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground" style={{ fontFamily: "var(--font-space-grotesk)" }}>
             Testimonials
           </h2>

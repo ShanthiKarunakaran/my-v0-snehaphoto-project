@@ -5,7 +5,7 @@ import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[50vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-background">
+    <section className="relative min-h-[50vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-6 md:pb-12 md:pt-16 overflow-hidden bg-background">
       {/* Primary color glow effects - reduced on mobile */}
       <div className="absolute top-20 left-10 w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-primary/15 sm:bg-primary/20 md:bg-primary/25 rounded-full blur-[80px] sm:blur-[100px] md:blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
       {/* Moving glow that sweeps across the image - reduced on mobile */}
@@ -131,13 +131,13 @@ export function HeroSection() {
               education projects.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+            <div className="flex flex-col items-start gap-2 mb-8">
               <Button
                 asChild
                 size="lg"
-                className="bg-primary hover:bg-primary/80 text-primary-foreground text-base px-8 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group"
+                className="bg-primary hover:bg-primary/80 text-primary-foreground text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group w-full sm:w-auto"
               >
-                <a href="#portfolio" className="flex items-center gap-2">
+                <a href="#portfolio" className="flex items-center justify-center gap-2">
                   View my work
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </a>
@@ -146,7 +146,7 @@ export function HeroSection() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="text-base font-bold px-8 py-7 rounded-lg border-[3px] border-primary bg-primary/10 backdrop-blur-sm hover:bg-primary/40 hover:border-primary text-primary hover:text-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105 relative overflow-hidden group"
+                className="text-sm sm:text-base font-bold px-6 sm:px-8 py-5 sm:py-6 rounded-lg border-[3px] border-primary bg-primary/10 backdrop-blur-sm hover:bg-primary/40 hover:border-primary text-primary hover:text-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105 relative overflow-hidden group w-full sm:w-auto"
               >
                 <a href="#contact" className="relative z-10">
                   Book a Session or Donate
@@ -154,15 +154,19 @@ export function HeroSection() {
               </Button>
             </div>
 
-            {/* Donation Impact Stat */}
-            <div className="flex items-center gap-4 pt-6 border-t border-border/40">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <DollarSign className="h-4 w-4 text-primary" />
+            {/* Donation Impact Stat - moved below buttons, simplified on mobile */}
+            <div className="flex items-center gap-2 sm:gap-3 pt-4 sm:pt-6 border-t border-border/40">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                 </div>
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground tracking-wide mb-0.5">Amount raised so far to support OneProsper&apos;s education projects</p>
-                  <p className="text-xl font-semibold text-primary">$115</p>
+                <div className="min-w-0">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground tracking-wide mb-0.5 leading-tight">
+                    <span className="hidden sm:inline">Amount raised so far to support </span>
+                    <span className="sm:hidden">Raised for </span>
+                    OneProsper&apos;s education projects
+                  </p>
+                  <p className="text-base sm:text-xl font-semibold text-primary">$115</p>
                 </div>
               </div>
             </div>

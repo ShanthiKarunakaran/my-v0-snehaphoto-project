@@ -240,14 +240,14 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="py-20 md:py-32 px-6 lg:px-8 bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden"
+      className="py-12 md:py-20 px-6 lg:px-8 bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden"
     >
       {/* Decorative elements */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
 
       <div className="max-w-5xl mx-auto relative z-10">
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-8 md:mb-12">
           <h2
             className="text-4xl md:text-6xl font-bold text-foreground mb-4 text-balance"
             style={{ fontFamily: "var(--font-space-grotesk)" }}

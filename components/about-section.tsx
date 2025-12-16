@@ -4,7 +4,7 @@ import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function AboutSection() {
   return (
-    <section id="about" className="py-20 md:py-32 px-6 lg:px-8 bg-secondary/30">
+    <section id="about" className="py-12 md:py-20 px-6 lg:px-8 bg-secondary/30">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           <div>

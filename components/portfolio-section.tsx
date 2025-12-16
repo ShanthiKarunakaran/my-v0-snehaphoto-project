@@ -292,7 +292,7 @@ export function PortfolioSection() {
       <section
         id="portfolio"
         className={cn(
-          "py-20 md:py-32 px-6 lg:px-8 bg-gradient-to-b from-background via-primary/5 to-background relative overflow-visible transition-all duration-700",
+          "py-12 md:py-20 px-6 lg:px-8 bg-gradient-to-b from-background via-primary/5 to-background relative overflow-visible transition-all duration-700",
           highlightGallery && "ring-4 ring-offset-4 ring-offset-background ring-primary/60 shadow-[0_0_0_12px_rgba(244,63,94,0.08)]"
         )}
       >
@@ -308,7 +308,7 @@ export function PortfolioSection() {
         />
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-8 md:mb-12">
             <h2
               className="text-4xl md:text-6xl font-bold text-foreground mb-4 text-balance"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -321,7 +321,7 @@ export function PortfolioSection() {
           </div>
 
           {/* Category Filter */}
-          <div className="mb-12">
+          <div className="mb-8 md:mb-12">
             <nav className="flex flex-wrap justify-center gap-3 md:gap-8 px-6 md:px-8 py-4 bg-card/90 backdrop-blur-md rounded-xl border-2 border-border/60 shadow-md">
               {categories.map((category) => {
                 const displayName = category === "All"
