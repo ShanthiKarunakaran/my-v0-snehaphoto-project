@@ -5,7 +5,7 @@ import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[30vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-background">
+    <section className="relative min-h-[50vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-12 md:pt-16 overflow-hidden bg-background">
       {/* Primary color glow effects */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-primary/25 rounded-full blur-[120px] animate-[safelight-pulse_4s_ease-in-out_infinite]" />
       {/* Moving glow that sweeps across the image */}
@@ -97,7 +97,7 @@ export function HeroSection() {
 
             <div className="relative inline-block">
               <h1
-                className="text-6xl md:text-7xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance relative z-10"
+                className="text-4xl sm:text-5xl md:text-7xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance relative z-10"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
                 Turning creative vision into positive change
@@ -108,7 +108,7 @@ export function HeroSection() {
               <div className="pointer-events-none absolute -inset-x-24 top-0 h-full bg-gradient-to-r from-transparent via-primary/15 to-transparent animate-[shine_6s_linear_infinite]" />
             </div>
 
-            <p className="text-xl md:text-2xl text-foreground mb-10 max-w-2xl leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl text-foreground mb-10 max-w-2xl leading-relaxed">
               Every photoshoot supports a cause – funds{" "}
               <SmartOneProsperLink className="text-primary hover:text-primary/80 hover:underline transition-colors">
                 OneProsper&apos;s
