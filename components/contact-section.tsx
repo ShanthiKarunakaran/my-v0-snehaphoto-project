@@ -6,10 +6,10 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { CheckCircle2, AlertCircle, Sparkles, DollarSign, TrendingUp } from "lucide-react"
+import { CheckCircle2, AlertCircle, DollarSign, TrendingUp, Sparkles } from "lucide-react"
+import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 // Form now submits to /api/contact API route
 import { cn } from "@/lib/utils"
-import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -17,8 +17,6 @@ export function ContactSection() {
     email: "",
     interestedInPhotoshoot: "", // "yes" or "no"
     photoshootTypes: [] as string[], // Array of selected photoshoot types
-    donationAmount: "",
-    donationType: "" as "" | "preset" | "custom", // Track if using preset or custom
     message: "",
     website: "", // Honeypot field - hidden from users
   })
@@ -83,46 +81,6 @@ export function ContactSection() {
       return
     }
 
-    // Validate donation amount if provided (optional for both Yes and No)
-    if (formData.donationAmount && formData.donationAmount.trim()) {
-      const donationValue = formData.donationAmount.trim()
-      // Remove currency symbols and whitespace
-      const cleanedDonation = donationValue.replace(/[$,\s]/g, '')
-      const donationNumber = parseFloat(cleanedDonation)
-      
-      if (isNaN(donationNumber)) {
-        setSubmitStatus({
-          type: "error",
-          message: "Please enter a valid donation amount (e.g., $35 or 35).",
-        })
-        return
-      }
-
-      if (donationNumber <= 0) {
-        setSubmitStatus({
-          type: "error",
-          message: "Donation amount must be greater than $0.",
-        })
-        return
-      }
-
-      if (donationNumber > 10000) {
-        setSubmitStatus({
-          type: "error",
-          message: "Donation amount seems unusually high. Please contact directly for large donations.",
-        })
-        return
-      }
-
-      if (donationNumber < 1) {
-        setSubmitStatus({
-          type: "error",
-          message: "Donation amount must be at least $1.",
-        })
-        return
-      }
-    }
-
     // Content validation
     const messageLength = formData.message.length
     if (messageLength < 10) {
@@ -156,7 +114,6 @@ export function ContactSection() {
           message: formData.message,
           interestedInPhotoshoot: formData.interestedInPhotoshoot,
           photoshootTypes: formData.photoshootTypes,
-          donationAmount: formData.donationAmount,
           website: formData.website, // Honeypot field
           timestamp: formStartTimeRef.current || Date.now(),
         }),
@@ -170,7 +127,7 @@ export function ContactSection() {
           message: "Thank you for your message! I'll get back to you soon.",
         })
         // Reset form
-        setFormData({ name: "", email: "", interestedInPhotoshoot: "", photoshootTypes: [], donationAmount: "", donationType: "", message: "", website: "" })
+        setFormData({ name: "", email: "", interestedInPhotoshoot: "", photoshootTypes: [], message: "", website: "" })
         formStartTimeRef.current = Date.now() // Reset timer for next submission
       } else {
         setSubmitStatus({
@@ -206,17 +163,15 @@ export function ContactSection() {
       const params = new URLSearchParams(searchPart)
       const printParam = params.get("print")
       const typeParam = params.get("type")
-      const donationParam = params.get("donation")
 
       // Only apply once per unique param set to avoid overwriting user edits
-      const key = `${printParam ?? ""}|${typeParam ?? ""}|${donationParam ?? ""}`
-      if (hasAppliedPrefillRef.current && !printParam && !donationParam && !typeParam) return
+      const key = `${printParam ?? ""}|${typeParam ?? ""}`
+      if (hasAppliedPrefillRef.current && !printParam && !typeParam) return
 
       setFormData((prev) => ({
         ...prev,
         interestedInPhotoshoot: printParam ? "yes" : prev.interestedInPhotoshoot,
         photoshootTypes: printParam ? [decodeURIComponent(printParam)] : prev.photoshootTypes,
-        donationAmount: donationParam ? decodeURIComponent(donationParam) : prev.donationAmount,
         message:
           typeParam === "digital-print" && !prev.message
             ? "Hi Sneha! I'd love to purchase this digital print."
@@ -260,13 +215,13 @@ export function ContactSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
-          {/* Column 1: Book a Session Form */}
+          {/* Column 1: Contact Me Form */}
           <div className="flex flex-col">
             <h3
               className="text-2xl md:text-3xl font-bold text-foreground mb-6"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              Book a Session
+              Contact Me
             </h3>
             <div
               className={cn(
@@ -358,23 +313,19 @@ export function ContactSection() {
                       ].map((type) => (
                         <label key={type} className="flex items-center gap-2 cursor-pointer">
                           <input
-                            type="checkbox"
-                            checked={formData.photoshootTypes.includes(type)}
+                            type="radio"
+                            name="photoshootType"
+                            value={type}
+                            checked={formData.photoshootTypes[0] === type}
                             onChange={(e) => {
-                              if (e.target.checked) {
-                                setFormData({
-                                  ...formData,
-                                  photoshootTypes: [...formData.photoshootTypes, type],
-                                })
-                              } else {
-                                setFormData({
-                                  ...formData,
-                                  photoshootTypes: formData.photoshootTypes.filter((t) => t !== type),
-                                })
-                              }
+                              setFormData({
+                                ...formData,
+                                photoshootTypes: [e.target.value],
+                              })
                             }}
-                            className="w-4 h-4 text-primary border-2 border-border rounded focus:ring-primary"
+                            className="w-4 h-4 text-primary border-2 border-border focus:ring-primary"
                             disabled={isSubmitting}
+                            required
                           />
                           <span className="text-foreground text-sm">{type}</span>
                         </label>
@@ -394,89 +345,12 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-foreground mb-2">
-                  Donation amount (PayPal)
-                </label>
-                
-                {/* Preset donation buttons */}
-                <div className="flex flex-wrap gap-3 mb-3">
-                  {[
-                    { label: "$15", value: "15" },
-                    { label: "$35", value: "35" },
-                    { label: "$50", value: "50" },
-                    { label: "Custom", value: "custom" },
-                  ].map((preset) => (
-                    <button
-                      key={preset.value}
-                      type="button"
-                      onClick={() => {
-                        if (preset.value === "custom") {
-                          setFormData({
-                            ...formData,
-                            donationType: "custom",
-                            donationAmount: "",
-                          })
-                        } else {
-                          setFormData({
-                            ...formData,
-                            donationType: "preset",
-                            donationAmount: preset.value,
-                          })
-                        }
-                      }}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                        formData.donationType === "preset" && formData.donationAmount === preset.value
-                          ? "bg-primary text-primary-foreground shadow-lg"
-                          : preset.value === "custom" && formData.donationType === "custom"
-                          ? "bg-primary text-primary-foreground shadow-lg"
-                          : "bg-background/60 border-2 border-border text-foreground hover:border-primary hover:bg-primary/10"
-                      }`}
-                      disabled={isSubmitting}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Custom input - only show when Custom is selected */}
-                {formData.donationType === "custom" && (
-                  <div className="mb-3">
-                    <Input
-                      id="donation-amount"
-                      type="text"
-                      placeholder="e.g. $25"
-                      value={formData.donationAmount}
-                      onChange={(e) => setFormData({ ...formData, donationAmount: e.target.value })}
-                      className="bg-background border-2 rounded-xl"
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                )}
-
-                <p className="text-xs text-muted-foreground mt-2">
-                  {formData.donationType === "custom" || formData.donationType === ""
-                    ? "You can choose an amount above or type your own. "
-                    : ""}
-                  Donations support OneProsper&apos;s education projects. Donations are processed through PayPal at{" "}
-                  <a
-                    href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    paypal.me/ShanthiKarunakaran
-                  </a>
-                  .
-                </p>
-              </div>
-
-              <div>
                 <label htmlFor="message" className="block text-sm font-bold text-foreground mb-2">
                   Message <span className="text-destructive">*</span>
                 </label>
                 <Textarea
                   id="message"
-                  placeholder="Tell me anything else you'd like me to know about your photoshoot or digital print order..."
+                  placeholder="Tell me anything else you would like me to know about your photoshoot..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
@@ -539,13 +413,13 @@ export function ContactSection() {
             </div>
           </div>
 
-          {/* Column 2: Donate CTA */}
+          {/* Column 2: Donate */}
           <div className="flex flex-col">
             <h3
               className="text-2xl md:text-3xl font-bold text-foreground mb-6"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              Donate
+              Support the Cause
             </h3>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6 text-pretty">
               Support <SmartOneProsperLink className="text-primary hover:underline">OneProsper</SmartOneProsperLink> International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
@@ -553,12 +427,85 @@ export function ContactSection() {
             
             <div className="bg-background/60 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-lg shadow-foreground/5">
               <div className="space-y-6">
+                <div>
+                  {/* Commented out: Donation amount selection buttons */}
+                  {/* <label className="block text-sm font-bold text-foreground mb-3">
+                    Donation amount (PayPal)
+                  </label>
+                  
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    {[
+                      { label: "$15", value: "15" },
+                      { label: "$35", value: "35" },
+                      { label: "$50", value: "50" },
+                      { label: "Custom", value: "custom" },
+                    ].map((preset) => (
+                      <a
+                        key={preset.value}
+                        href={`https://www.paypal.com/paypalme/ShanthiKarunakaran${preset.value !== "custom" ? `?amount=${preset.value}` : ""}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                          preset.value === "custom"
+                            ? "bg-background/60 border-2 border-border text-foreground hover:border-primary hover:bg-primary/10"
+                            : "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 hover:scale-105"
+                        }`}
+                      >
+                        {preset.label}
+                      </a>
+                    ))}
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    Donations support OneProsper&apos;s education projects. Donations are securely processed through PayPal at{" "}
+                    <a
+                      href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      paypal.me/ShanthiKarunakaran
+                    </a>
+                    .
+                  </p> */}
+                  
+                  {/* Donate via PayPal button */}
+                  <div className="flex justify-center mb-4">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 px-8 shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                    >
+                      <a
+                        href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Donate via PayPal
+                      </a>
+                    </Button>
+                  </div>
+                  
+                  <p className="text-xs text-center text-muted-foreground">
+                    Donations support OneProsper&apos;s education projects. Donations are securely processed through PayPal at{" "}
+                    <a
+                      href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      paypal.me/ShanthiKarunakaran
+                    </a>
+                    .
+                  </p>
+                </div>
+
                 {/* Donation Impact Stat */}
                 <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-6 border border-primary/20">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-5 w-5 text-primary" />
-                      <span className="text-sm font-medium text-muted-foreground">Total Raised</span>
+                      
+                      <span className="text-sm font-medium text-muted-foreground">Total amount raised so far</span>
                     </div>
                     <TrendingUp className="h-4 w-4 text-primary/70" />
                   </div>
@@ -566,112 +513,15 @@ export function ContactSection() {
                   <p className="text-xs text-muted-foreground">Supporting OneProsper&apos;s education programs</p>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground mb-1">100% of donations go to OneProsper</p>
-                    <p className="text-sm text-muted-foreground">
-                      All proceeds support girls&apos; education and empowerment programs.
-                    </p>
-                  </div>
+                <div>
+                  <p className="font-semibold text-foreground mb-1">100% of donations go to OneProsper</p>
+                  <p className="text-sm text-muted-foreground">
+                    All proceeds support girls&apos; education and empowerment programs.
+                  </p>
                 </div>
-                
-                <div className="flex justify-center">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-lg py-6 px-8 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                  >
-                    <a
-                      href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Donate via PayPal
-                    </a>
-                  </Button>
-                </div>
-                
-                <p className="text-xs text-center text-muted-foreground">
-                  Secure payment through PayPal
-                </p>
               </div>
             </div>
           </div>
-
-          {/* Commented out: Get in Touch section */}
-          {/* <div className="space-y-8">
-            <div>
-              <h3
-                className="text-2xl font-bold text-foreground mb-6"
-                style={{ fontFamily: "var(--font-space-grotesk)" }}
-              >
-                Get in Touch
-              </h3>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-8 text-pretty">
-                Whether you're looking for portrait sessions, event coverage, or creative photography, I'm here to help
-                bring your vision to life while supporting a great cause!
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <a
-                href="mailto:shanthi.arun@gmail.com"
-                className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/10 border-2 border-secondary/20 hover:border-secondary/40 text-foreground transition-all hover:scale-105 group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
-                  <Mail className="h-6 w-6 text-secondary-foreground" />
-                </div>
-                <span className="font-medium">shanthi.arun@gmail.com</span>
-              </a>
-
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 rounded-2xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 text-foreground transition-all hover:scale-105 group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
-                  <Instagram className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <span className="font-medium">@photography</span>
-              </a>
-            </div>
-
-            <div className="pt-8 border-t-2 border-border">
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-accent/10">
-                <Camera className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Response time is typically within 24 hours!
-                </p>
-              </div>
-            </div>
-
-            <div className="hidden md:block p-6 rounded-3xl bg-card/40 border-2 border-border/60 space-y-3">
-              <h4 className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-space-grotesk)" }}>
-                How to order a digital print
-              </h4>
-              <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside leading-relaxed">
-                <li>Tap "Select images to download" in the gallery and choose the photos you want.</li>
-                <li>Use <span className="font-semibold text-primary">"Review selection & download"</span> to open the download panel.</li>
-                <li>Donate via PayPal and use the download buttons to grab the high-resolution files instantly.</li>
-                <li>
-                  Donations are collected via PayPal:&nbsp;
-                  <a
-                    href="https://www.paypal.com/paypalme/ShanthiKarunakaran"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    paypal.me/ShanthiKarunakaran
-                  </a>
-                  .
-                </li>
-              </ul>
-            </div>
-          </div> */}
         </div>
       </div>
     </section>
