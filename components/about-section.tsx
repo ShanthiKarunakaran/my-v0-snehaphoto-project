@@ -20,7 +20,7 @@ export function AboutSection() {
               personalities and stories.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-             I have photographed several photoshoots featured in my <a href="#portfolio?category=Portraits" className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">gallery</a>, where you can see my work and style.
+             I have photographed a variety of photoshoots featured in my <a href="#portfolio?category=Portraits" className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">Portraits</a>, where you can see my work and style.
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Services</h3>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">

@@ -18,6 +18,32 @@ export function Navigation() {
     { name: "Contact", href: "/#contact" },
   ]
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only handle hash links
+    if (href.startsWith("/#")) {
+      e.preventDefault()
+      const hash = href.replace("/", "")
+      const sectionId = hash.split("?")[0]
+      const element = document.querySelector(sectionId)
+      
+      if (element) {
+        const navHeight = 64
+        const elementTop = element.getBoundingClientRect().top + window.pageYOffset
+        const offsetPosition = elementTop - navHeight
+        
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: "smooth"
+        })
+        
+        // Update URL hash without triggering scroll
+        window.history.pushState(null, "", hash)
+      }
+    }
+    // Close mobile menu if open
+    setIsMenuOpen(false)
+  }
+
   const socialLinks = [
    
     { icon: Mail, href: "mailto:shanthi.arun@gmail.com", label: "Email" },
@@ -53,6 +79,7 @@ export function Navigation() {
               <a
                 key={item.name}
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item.href)}
                 className="text-white/90 hover:text-primary-foreground transition-colors duration-200 text-sm font-medium"
               >
                 {item.name}
@@ -109,8 +136,11 @@ export function Navigation() {
                 <a
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => {
+                    handleNavClick(e, item.href)
+                    setIsMenuOpen(false)
+                  }}
                   className="text-white/90 hover:text-white transition-colors duration-200 text-sm font-medium"
-                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </a>

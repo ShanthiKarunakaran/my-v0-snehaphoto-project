@@ -124,34 +124,30 @@ export function HeroSection() {
             </div>
 
             <p className="text-lg sm:text-xl md:text-2xl text-foreground mb-10 max-w-2xl leading-relaxed">
-              Every photoshoot supports a cause – funds{" "}
+              Every photoshoot supports a cause – funding{" "}
               <SmartOneProsperLink className="text-primary hover:text-primary/80 hover:underline transition-colors">
                 OneProsper&apos;s
               </SmartOneProsperLink>{" "}
               education projects.
             </p>
 
-            <div className="flex flex-col items-start gap-2 mb-8">
+            <div className="flex flex-col items-center md:items-start gap-4 mb-8">
               <Button
                 asChild
                 size="lg"
-                className="bg-primary hover:bg-primary/80 text-primary-foreground text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group w-full sm:w-auto"
-              >
-                <a href="#portfolio" className="flex items-center justify-center gap-2">
-                  View my work
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="text-sm sm:text-base font-bold px-6 sm:px-8 py-5 sm:py-6 rounded-lg border-[3px] border-primary bg-primary/10 backdrop-blur-sm hover:bg-primary/40 hover:border-primary text-primary hover:text-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105 relative overflow-hidden group w-full sm:w-auto"
+                className="bg-primary hover:bg-primary/80 text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group w-auto"
               >
                 <a href="#contact" className="relative z-10">
                   Book a Session or Donate
                 </a>
               </Button>
+              <a
+                href="#portfolio"
+                className="flex items-center gap-2 text-lg sm:text-xl font-semibold text-primary hover:text-primary/80 transition-all group underline-offset-4 hover:underline decoration-2 decoration-primary/60 hover:decoration-primary"
+              >
+                View my work
+                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform" />
+              </a>
             </div>
 
             {/* Donation Impact Stat - moved below buttons, simplified on mobile */}

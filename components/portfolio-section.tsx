@@ -21,6 +21,8 @@ export function PortfolioSection() {
   const [pagination, setPagination] = useState<{ total: number; totalPages: number } | null>(null);
   const [highlightGallery, setHighlightGallery] = useState(false);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevCategoryRef = useRef<string | null>(null);
+  const imagesFetchedRef = useRef(false);
 
   // Function to fetch images from the API
   const fetchImages = useCallback(async () => {
@@ -118,39 +120,51 @@ export function PortfolioSection() {
     }, 1200)
   }, [])
 
-  //useEffect hook to handle hash change
+  //useEffect hook to handle hash change - ONLY for portfolio section
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash
-      if (hash) {
+      // Only handle portfolio-related hash changes
+      if (hash && hash.startsWith("#portfolio")) {
         //split the hash into sectionID and category using ?
         const parts = hash.split("?")
-        const sectionID = parts[0]
+        const sectionID = parts[0] // Should be "#portfolio"
         const category = parts[1]
-        console.log("category", category)
+        console.log("portfolio category", category)
 
-        //scroll to the sectionID
+        //scroll to the portfolio section with offset for navigation bar
         const section = document.querySelector(sectionID)
         if (section) {
-          section.scrollIntoView({ behavior: "smooth" })
-          if (sectionID === "#portfolio") {
-            flashGallery()
-          }
+          const navHeight = 64
+          const elementTop = section.getBoundingClientRect().top + window.pageYOffset
+          const offsetPosition = elementTop - navHeight
+          
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: "smooth"
+          })
+          flashGallery()
         }
-        //extract Portraits from category need the word after = sign
+        //extract category from URL parameter
         if (category) {
           const categoryArray = category.split("=")
-
-          if (sectionID === "#portfolio" && category) {
+          if (category) {
             // Decode URL-encoded category name (e.g., "Graduation%20Photos" -> "Graduation Photos")
             const decodedCategory = decodeURIComponent(categoryArray[1] || "")
             setSelectedCategory(decodedCategory) //sets the category filter in the portfolio section
           }
+        } else {
+          // If no category parameter, reset to "All"
+          setSelectedCategory("All")
         }
       }
     }
 
-    handleHashChange()
+    // Only run on mount if hash is already #portfolio
+    if (window.location.hash.startsWith("#portfolio")) {
+      handleHashChange()
+    }
+    
     window.addEventListener("hashchange", handleHashChange)
     return () => {
       window.removeEventListener("hashchange", handleHashChange)
@@ -158,25 +172,39 @@ export function PortfolioSection() {
         clearTimeout(highlightTimeoutRef.current)
       }
     }
-    /*if (hash) {
-      const element = document.querySelector(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }*/
   }, [flashGallery]) //empty dependency array which means run only once on mount
 
-  // useEffect to fetch images when component mounts or category/page changes
+  // Reset page to 1 and clear images when category changes (but not on initial mount)
   useEffect(() => {
+    // Only clear images if category actually changed (not on initial mount)
+    if (prevCategoryRef.current !== null && prevCategoryRef.current !== selectedCategory) {
+      setPage(1);
+      setImages([]); // Clear images when category changes
+      setError(null); // Clear any errors
+    }
+    prevCategoryRef.current = selectedCategory;
+  }, [selectedCategory]);
+
+  // useEffect to fetch images when component mounts or category/page changes
+  // This ensures images are loaded on initial mount and whenever dependencies change
+  useEffect(() => {
+    // Always fetch images when dependencies change
     fetchImages();
   }, [fetchImages]); // Run when fetchImages changes (which depends on page and selectedCategory)
-
-  // Reset page to 1 and clear images when category changes
+  
+  // Ensure images are loaded if they're empty (e.g., after scrolling back to section)
+  // This is a safety check to refetch if images were somehow cleared
   useEffect(() => {
-    setPage(1);
-    setImages([]); // Clear images when category changes
-    setError(null); // Clear any errors
-  }, [selectedCategory]);
+    // If images are empty, we're not loading, and we haven't already fetched for this category/page combo
+    if (images.length === 0 && !isLoading && page === 1 && !imagesFetchedRef.current) {
+      console.log('Images are empty, fetching initial images...');
+      imagesFetchedRef.current = true;
+      fetchImages();
+    } else if (images.length > 0) {
+      // Reset the flag when images are successfully loaded
+      imagesFetchedRef.current = false;
+    }
+  }, [images.length, isLoading, page, fetchImages]);
   
   // Handle browser back/forward navigation - reset state when navigating
   useEffect(() => {

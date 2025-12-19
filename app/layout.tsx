@@ -7,6 +7,7 @@ import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import FilmStrip from "@/components/ui/film-strip"
+import { SmoothScrollHandler } from "@/components/smooth-scroll-handler"
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({
         `}</Script>
       </head>
       <body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable} antialiased`}>
+        <SmoothScrollHandler />
         <Navigation />
         {children}
         <Footer />
