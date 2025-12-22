@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Instagram, Mail, Heart, X } from "lucide-react"
 import Image from "next/image"
-import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function Footer() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -136,7 +135,7 @@ export function Footer() {
               <span className="sm:hidden">All rights reserved. </span>
               <span className="hidden sm:inline">All proceeds support charitable organization </span>
               <span className="sm:hidden">Proceeds support </span>
-              <SmartOneProsperLink className="text-primary hover:underline">OneProsper</SmartOneProsperLink>
+              <span>OneProsper</span>
             </div>
           </div>
 
