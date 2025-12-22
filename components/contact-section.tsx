@@ -504,12 +504,12 @@ export function ContactSection() {
                 <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-6 border border-primary/20">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      
-                      <span className="text-sm font-medium text-muted-foreground">Total amount raised so far</span>
+                       
+                       <span className="text-sm font-medium text-muted-foreground">Total amount raised so far</span>
                     </div>
                     <TrendingUp className="h-4 w-4 text-primary/70" />
                   </div>
-                  <p className="text-4xl font-bold text-primary mb-1">$115</p>
+                  <p className="text-4xl font-bold text-primary mb-1">$115 <span className="text-lg font-normal text-muted-foreground">raised of $5000</span></p>
                   <p className="text-xs text-muted-foreground">Supporting OneProsper&apos;s education programs</p>
                 </div>
 
