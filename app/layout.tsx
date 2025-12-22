@@ -22,8 +22,8 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Teen Photography | Shots for a Cause ✨",
-  description: "Fun, creative photography by a teen photographer. Every photoshoot supports amazing causes!",
+  title: "Sneha Arun's Photography | Photoshoots for a Cause",
+  description: "Fun, creative photography. Every photoshoot supports an amazing cause!",
   icons: {
     icon: [
       { url: "/favicon-16-light.png", sizes: "16x16", media: "(prefers-color-scheme: light)" },
