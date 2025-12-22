@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CheckCircle2, AlertCircle, DollarSign, TrendingUp, Sparkles } from "lucide-react"
-import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 // Form now submits to /api/contact API route
 import { cn } from "@/lib/utils"
 
@@ -422,7 +421,7 @@ export function ContactSection() {
               Support the Cause
             </h3>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6 text-pretty">
-              Support <SmartOneProsperLink className="text-primary hover:underline">OneProsper</SmartOneProsperLink> International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
+              Support OneProsper International and help fund education, housing, and more for low-income girls in India. Every contribution makes a difference.
             </p>
             
             <div className="bg-background/60 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-lg shadow-foreground/5">
