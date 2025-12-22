@@ -148,7 +148,7 @@ export function HeroSection() {
             </div>
 
             <p className="text-lg sm:text-xl md:text-2xl text-foreground mb-10 max-w-2xl leading-relaxed">
-              Every photoshoot supports a cause – funding OneProsper&apos;s education projects.
+              Every photoshoot supports a cause – funding OneProsper International&apos;s education projects.
             </p>
 
             <div className="flex flex-col items-center md:items-start gap-4 mb-8">
