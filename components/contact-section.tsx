@@ -349,7 +349,7 @@ export function ContactSection() {
                 </label>
                 <Textarea
                   id="message"
-                  placeholder="Tell me anything else you would like me to know about your photoshoot..."
+                  placeholder="Tell me anything else you would like me to know..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
