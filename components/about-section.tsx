@@ -3,6 +3,29 @@
 import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function AboutSection() {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only handle hash links
+    if (href.startsWith("#")) {
+      e.preventDefault()
+      const sectionId = href
+      const element = document.querySelector(sectionId)
+      
+      if (element) {
+        const navHeight = 64
+        const elementTop = element.getBoundingClientRect().top + window.pageYOffset
+        const offsetPosition = elementTop - navHeight
+        
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: "smooth"
+        })
+        
+        // Update URL hash without triggering scroll
+        window.history.pushState(null, "", href)
+      }
+    }
+  }
+
   return (
     <section id="about" className="py-12 md:py-20 px-6 lg:px-8 bg-secondary/30">
       <div className="max-w-6xl mx-auto">
@@ -32,7 +55,7 @@ export function AboutSection() {
               volunteer with this organization, and every donation helps bring another girl&apos;s dream to life.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
-              <a href="#contact" className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">Contact me</a> to book a shoot or ask any questions.
+              <a href="#contact" onClick={(e) => handleNavClick(e, "#contact")} className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">Contact me</a> to book a shoot or ask any questions.
             </p>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">
               If you like to learn more about my work process, check out <a href="https://snehaarunphotographyii.weebly.com/choice.html" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">
