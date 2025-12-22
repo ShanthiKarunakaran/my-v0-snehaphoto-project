@@ -44,6 +44,29 @@ export function Footer() {
     { href: "mailto:shanthi.arun@gmail.com", icon: Mail, label: "Email" },
   ]
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only handle hash links
+    if (href.startsWith("#")) {
+      e.preventDefault()
+      const sectionId = href
+      const element = document.querySelector(sectionId)
+      
+      if (element) {
+        const navHeight = 64
+        const elementTop = element.getBoundingClientRect().top + window.pageYOffset
+        const offsetPosition = elementTop - navHeight
+        
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: "smooth"
+        })
+        
+        // Update URL hash without triggering scroll
+        window.history.pushState(null, "", href)
+      }
+    }
+  }
+
   return (
     <footer className="border-t-2 border-border py-12 px-6 lg:px-8 bg-gradient-to-t from-primary/5 to-background">
       <div className="max-w-7xl mx-auto">
@@ -71,15 +94,28 @@ export function Footer() {
           <div className="flex items-center gap-4 sm:gap-8 flex-wrap justify-center">
             <a
               href="#portfolio"
+              onClick={(e) => handleNavClick(e, "#portfolio")}
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               Portfolio
             </a>
-            <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <a 
+              href="#about" 
+              onClick={(e) => handleNavClick(e, "#about")}
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            >
               About
             </a>
             <a
+              href="#testimonials"
+              onClick={(e) => handleNavClick(e, "#testimonials")}
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            >
+              Testimonials
+            </a>
+            <a
               href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               Contact

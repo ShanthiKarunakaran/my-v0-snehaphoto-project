@@ -1,9 +1,34 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Camera, ArrowRight, DollarSign } from "lucide-react"
 import Image from "next/image"
 import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function HeroSection() {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only handle hash links
+    if (href.startsWith("#")) {
+      e.preventDefault()
+      const sectionId = href
+      const element = document.querySelector(sectionId)
+      
+      if (element) {
+        const navHeight = 64
+        const elementTop = element.getBoundingClientRect().top + window.pageYOffset
+        const offsetPosition = elementTop - navHeight
+        
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: "smooth"
+        })
+        
+        // Update URL hash without triggering scroll
+        window.history.pushState(null, "", href)
+      }
+    }
+  }
+
   return (
     <section className="relative min-h-[50vh] md:min-h-screen flex items-center px-6 lg:px-8 pt-20 pb-6 md:pb-12 md:pt-16 overflow-hidden bg-background">
       {/* Primary color glow effects - reduced on mobile */}
@@ -137,12 +162,13 @@ export function HeroSection() {
                 size="lg"
                 className="bg-primary hover:bg-primary/80 text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all group w-auto"
               >
-                <a href="#contact" className="relative z-10">
-                  Book a Session or Donate
+                <a href="#contact" onClick={(e) => handleNavClick(e, "#contact")} className="relative z-10">
+                  Contact Me or Donate
                 </a>
               </Button>
               <a
                 href="#portfolio"
+                onClick={(e) => handleNavClick(e, "#portfolio")}
                 className="flex items-center gap-2 text-lg sm:text-xl font-semibold text-primary hover:text-primary/80 transition-all group underline-offset-4 hover:underline decoration-2 decoration-primary/60 hover:decoration-primary"
               >
                 View my work
