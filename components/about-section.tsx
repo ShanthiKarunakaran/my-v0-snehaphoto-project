@@ -1,7 +1,5 @@
 "use client"
 
-import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
-
 export function AboutSection() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // Only handle hash links
@@ -50,7 +48,7 @@ export function AboutSection() {
               I am offering photoshoots for senior portraits, headshots, &quot;choose-your-own-theme&quot; portraits, and more!
             </p>
             <h3 className="text-2xl font-bold text-foreground mb-6">My Mission</h3>
-            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">All proceeds are donated to <SmartOneProsperLink className="text-primary font-semibold hover:underline hover:text-primary/90 transition-colors">OneProsper International</SmartOneProsperLink>, a nonprofit
+            <p className="text-muted-foreground text-lg mb-6 leading-relaxed text-pretty">All proceeds are donated to OneProsper International, a nonprofit
               organization that funds education, housing, and more for low-income girls in India. I am an active
               volunteer with this organization, and every donation helps bring another girl&apos;s dream to life.
             </p>
