@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { Camera, ArrowRight, DollarSign } from "lucide-react"
 import Image from "next/image"
-import { SmartOneProsperLink } from "@/components/ui/smart-oneprosper-link"
 
 export function HeroSection() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -149,11 +148,7 @@ export function HeroSection() {
             </div>
 
             <p className="text-lg sm:text-xl md:text-2xl text-foreground mb-10 max-w-2xl leading-relaxed">
-              Every photoshoot supports a cause – funding{" "}
-              <SmartOneProsperLink className="text-primary hover:text-primary/80 hover:underline transition-colors">
-                OneProsper&apos;s
-              </SmartOneProsperLink>{" "}
-              education projects.
+              Every photoshoot supports a cause – funding OneProsper&apos;s education projects.
             </p>
 
             <div className="flex flex-col items-center md:items-start gap-4 mb-8">
