@@ -402,64 +402,81 @@ export function PortfolioSection() {
               return (
                 <div
                   key={image.id}
-                  onClick={() => setSelectedImage(image)}
-                  className="group relative min-h-[400px] overflow-hidden rounded-2xl bg-card cursor-pointer shadow-md transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                  style={{ animationDelay: `${index * 0.1}s`, position: "relative" }}
+                  className="group md:group"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  {image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in') ? (
-                    // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
-                    <img
-                      src={imageSrc}
-                      alt={image.alt_text}
-                      className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                      onError={(e) => {
-                        // Fallback to original URL if watermark fails, then placeholder
-                        const target = e.target as HTMLImageElement;
-                        if (target.src.includes('/api/watermarked-image')) {
-                          // Try original URL if watermark API failed
-                          target.src = image.cloudinary_url || "/placeholder.svg";
-                        } else {
-                          // Final fallback to placeholder
-                          target.src = "/placeholder.svg";
-                        }
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      src={image.cloudinary_url || "/placeholder.svg"}
-                      alt={image.alt_text}
-                      fill
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
-                      unoptimized={!image.cloudinary_url?.startsWith('http')}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  )}
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <div className="rounded-2xl bg-foreground/80 backdrop-blur-sm p-4 space-y-3">
-                    <div>
-                      <p className="text-background text-sm font-semibold">{image.alt_text}</p>
-                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-background/90">
-                        {image.category || "Uncategorized"}
-                      </p>
+                  {/* Container wrapping image and caption for visual grouping */}
+                  <div className="rounded-2xl bg-card border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+                    <div
+                      onClick={() => setSelectedImage(image)}
+                      className="relative min-h-[400px] overflow-hidden bg-card cursor-pointer transition-all duration-300 md:hover:scale-[1.02]"
+                    >
+                      {image.cloudinary_url?.includes('supabase.co') || image.cloudinary_url?.includes('supabase.in') ? (
+                        // Use regular img tag for Supabase URLs to avoid Next.js Image optimization issues
+                        <img
+                          src={imageSrc}
+                          alt={image.alt_text}
+                          className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                          onError={(e) => {
+                            // Fallback to original URL if watermark fails, then placeholder
+                            const target = e.target as HTMLImageElement;
+                            if (target.src.includes('/api/watermarked-image')) {
+                              // Try original URL if watermark API failed
+                              target.src = image.cloudinary_url || "/placeholder.svg";
+                            } else {
+                              // Final fallback to placeholder
+                              target.src = "/placeholder.svg";
+                            }
+                          }}
+                        />
+                      ) : (
+                        <Image
+                          src={image.cloudinary_url || "/placeholder.svg"}
+                          alt={image.alt_text}
+                          fill
+                          className="object-contain transition-transform duration-500 group-hover:scale-105"
+                          unoptimized={!image.cloudinary_url?.startsWith('http')}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      )}
+                      {/* Desktop: Hover overlay with caption */}
+                      <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="hidden md:block absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <div className="rounded-2xl bg-foreground/80 backdrop-blur-sm p-4 space-y-3">
+                          <div>
+                            <p className="text-background text-sm font-semibold">{image.alt_text}</p>
+                            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-background/90">
+                              {image.category || "Uncategorized"}
+                            </p>
+                          </div>
+                          <div className="flex justify-center">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="bg-background/90 text-foreground hover:bg-background"
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                setSelectedImage(image)
+                              }}
+                            >
+                              View
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-center">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="bg-background/90 text-foreground hover:bg-background"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          setSelectedImage(image)
-                        }}
-                      >
-                        View
-                      </Button>
+                    {/* Mobile: Caption below image (always visible) with divider */}
+                    <div className="md:hidden border-t border-border/30">
+                      <div className="px-4 py-3">
+                        <p className="text-foreground text-sm font-semibold">{image.alt_text}</p>
+                        <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          {image.category || "Uncategorized"}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               )
             })}
           </div>
