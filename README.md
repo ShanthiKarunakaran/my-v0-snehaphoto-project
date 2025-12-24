@@ -1,8 +1,8 @@
-# Sneha's Photography Website
+# Photography Web App
 
-A modern, responsive photography portfolio website built with Next.js, showcasing professional photography services and digital prints for charitable causes.
+A modern, responsive photography Web App built with Next.js, showcasing professional photography portfolio and services for charitable causes.
 
-## 🌟 Features
+## Features
 
 - **Responsive Design** - Optimized for all devices and screen sizes
 - **Modern UI/UX** - Clean, professional design with smooth animations
@@ -16,7 +16,7 @@ A modern, responsive photography portfolio website built with Next.js, showcasin
 - **Performance Optimized** - Built with Next.js for fast loading and SEO
 - **Accessibility** - WCAG compliant with proper semantic HTML
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Core Framework
 - **Next.js 15.5.4** - React-based full-stack framework
@@ -40,7 +40,7 @@ A modern, responsive photography portfolio website built with Next.js, showcasin
 - **PostCSS** - CSS processing
 - **Vercel Analytics** - Performance monitoring
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── app/                          # Next.js app directory
@@ -86,7 +86,7 @@ A modern, responsive photography portfolio website built with Next.js, showcasin
 └── components.json              # shadcn/ui configuration
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -131,7 +131,7 @@ A modern, responsive photography portfolio website built with Next.js, showcasin
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📸 Photography Services
+## Photography Services
 
 The website offers the following photography services (selectable via radio buttons in the contact form):
 
@@ -143,7 +143,7 @@ The website offers the following photography services (selectable via radio butt
 - **Event Photography** - Special events and occasions
 - **Other** - Custom photography services (specify in message)
 
-## 💝 Charitable Mission
+## Charitable Mission
 
 All proceeds from digital print sales and direct donations are donated to **OneProsper International**, a nonprofit organization that provides:
 - Educational funding for girls in India
@@ -156,7 +156,7 @@ All proceeds from digital print sales and direct donations are donated to **OneP
 - **Donation Methods**: PayPal (paypal.me/ShanthiKarunakaran)
 - **100% of donations** go directly to OneProsper International
 
-## 🎨 Design System
+## Design System
 
 The website uses a cohesive design system with:
 
@@ -209,14 +209,14 @@ The website uses a cohesive design system with:
 - **Icon Library**: Lucide React icon set
 - **Usage**: Navigation, social links, form elements, decorative elements
 
-## 📱 Responsive Design
+## Responsive Design
 
 - **Mobile First** - Optimized for mobile devices
 - **Tablet Support** - Enhanced layouts for tablets
 - **Desktop Experience** - Full-featured desktop interface
 - **Touch Friendly** - Accessible touch interactions
 
-## 🔧 Available Scripts
+## Available Scripts
 
 ```bash
 npm run dev      # Start development server
@@ -225,7 +225,7 @@ npm run start    # Start production server
 npm run lint     # Run ESLint
 ```
 
-## 🚀 Deployment
+##  Deployment
 
 The project is optimized for deployment on **Vercel**:
 
@@ -268,7 +268,7 @@ The contact form uses Resend for reliable email delivery. To set up:
 - **Analytics** - Vercel Analytics integration
 - **Core Web Vitals** - Optimized for Google's performance metrics
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -276,11 +276,11 @@ The contact form uses Resend for reliable email delivery. To set up:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is private and proprietary. All rights reserved.
 
-## 📞 Support
+## Support
 
 For questions or support regarding photography services, please use the contact form on the website or reach out directly.
 
