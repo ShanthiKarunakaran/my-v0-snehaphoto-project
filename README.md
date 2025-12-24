@@ -9,7 +9,7 @@ A modern, responsive photography Web App built with Next.js, showcasing professi
 - **Portfolio Gallery** - Showcase of photography work with category filtering and pagination
 - **Contact & Donate Sections** - Separated contact form and donation information
 - **Smooth Scroll Navigation** - Fixed header with offset-aware smooth scrolling
-- **Donation Tracking** - Real-time display of funds raised ($341 of $5000 goal)
+- **Donation Tracking** - Real-time display of funds raised 
 - **Contact Form** - Integrated contact functionality with email service (Resend)
 - **Testimonials Section** - Client testimonials and reviews
 - **Charitable Mission** - Digital prints support OneProsper International
@@ -152,7 +152,7 @@ All proceeds from digital print sales and direct donations are donated to **OneP
 
 ### Donation Tracking
 - **Current Goal**: $5,000
-- **Amount Raised**: $341 (displayed in Hero and Donate sections)
+- **Amount Raised**:  (displayed in Hero and Donate sections)
 - **Donation Methods**: PayPal (paypal.me/ShanthiKarunakaran)
 - **100% of donations** go directly to OneProsper International
 
