@@ -508,7 +508,7 @@ export function ContactSection() {
                     </div>
                     <TrendingUp className="h-4 w-4 text-primary/70" />
                   </div>
-                  <p className="text-4xl font-bold text-primary mb-1">$501 <span className="text-lg font-normal text-muted-foreground">raised of $5000</span></p>
+                  <p className="text-4xl font-bold text-primary mb-1">$601 <span className="text-lg font-normal text-muted-foreground">raised of $5000</span></p>
                   <p className="text-xs text-muted-foreground">Supporting OneProsper&apos;s education programs</p>
                 </div>
 
