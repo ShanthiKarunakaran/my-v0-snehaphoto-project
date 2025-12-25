@@ -20,7 +20,7 @@ const SPAM_KEYWORDS = [
   'viagra', 'cialis', 'casino', 'poker', 'lottery', 'winner', 'prize',
   'click here', 'buy now', 'limited time', 'act now', 'urgent',
   'make money', 'work from home', 'get rich', 'free money',
-  'nigerian prince', 'inheritance', 'lottery winner', 'congratulations',
+  'nigerian prince', 'inheritance', 'lottery winner',
   'bitcoin', 'crypto', 'investment opportunity', 'guaranteed',
   'seo services', 'backlinks', 'website traffic', 'increase sales',
   'weight loss', 'miracle', 'guaranteed results', 'no risk'
