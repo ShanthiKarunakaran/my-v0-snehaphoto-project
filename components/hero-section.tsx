@@ -183,7 +183,7 @@ export function HeroSection() {
                     <span className="sm:hidden">Raised for </span>
                     OneProsper&apos;s education projects
                   </p>
-                  <p className="text-base sm:text-xl font-semibold text-primary">$951 <span className="text-xs sm:text-sm font-normal text-muted-foreground">raised of $5000</span></p>
+                  <p className="text-base sm:text-xl font-semibold text-primary">$1051 <span className="text-xs sm:text-sm font-normal text-muted-foreground">raised of $5000</span></p>
                 </div>
               </div>
             </div>
