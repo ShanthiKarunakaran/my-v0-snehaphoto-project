@@ -28,3 +28,17 @@ export interface Category {
   color: string
   created_at: string
 }
+
+export interface Donation {
+  id: number
+  donor_name: string
+  amount: number
+  payment_method: string | null
+  note: string | null
+  transaction_date: string | null
+  is_donation: boolean
+  order_description: string | null
+  photoshoot_type: string | null
+  created_at: string
+  updated_at: string
+}

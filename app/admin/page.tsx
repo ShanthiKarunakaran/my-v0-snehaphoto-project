@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Upload, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Lock } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Upload, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Lock, DollarSign } from "lucide-react"
+import { DonationsManager } from "@/components/admin/donations-manager"
 
 interface UploadedFile {
   file: File
@@ -322,13 +324,13 @@ export default function AdminPage() {
   // Show admin content if authenticated
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-zinc-950/30 py-20 px-6">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Bulk Upload Images</h1>
+              <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Upload multiple images to Supabase Storage and add them to your portfolio database.
+                Manage images and donations for your portfolio.
               </p>
             </div>
             <Button
@@ -340,7 +342,19 @@ export default function AdminPage() {
             </Button>
           </div>
 
-          <div className="space-y-6">
+          <Tabs defaultValue="images" className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="images" className="flex items-center gap-2">
+                <ImageIcon className="h-4 w-4" />
+                Images
+              </TabsTrigger>
+              <TabsTrigger value="donations" className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4" />
+                Donations
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="images" className="space-y-6">
             {/* File Input - Multiple */}
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -532,7 +546,6 @@ export default function AdminPage() {
                 </>
               )}
             </Button>
-          </div>
 
           {/* Add Local Images Section */}
           <div className="mt-12 p-6 border-t border-border">
@@ -710,6 +723,12 @@ export default function AdminPage() {
               <li>Add <code className="bg-muted px-1 py-0.5 rounded">SUPABASE_SERVICE_ROLE_KEY</code> to your <code className="bg-muted px-1 py-0.5 rounded">.env.local</code></li>
             </ol>
           </div>
+            </TabsContent>
+
+            <TabsContent value="donations" className="space-y-6">
+              <DonationsManager />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
