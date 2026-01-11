@@ -1,10 +1,28 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Camera, ArrowRight, DollarSign } from "lucide-react"
 import Image from "next/image"
 
 export function HeroSection() {
+  const [donationTotal, setDonationTotal] = useState<number>(1101) // Default fallback
+
+  useEffect(() => {
+    const fetchDonationTotal = async () => {
+      try {
+        const response = await fetch("/api/donations?total=true")
+        const data = await response.json()
+        if (response.ok && typeof data.total === "number") {
+          setDonationTotal(data.total)
+        }
+      } catch (error) {
+        console.error("Failed to fetch donation total:", error)
+        // Keep default value on error
+      }
+    }
+    fetchDonationTotal()
+  }, [])
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // Only handle hash links
     if (href.startsWith("#")) {
@@ -183,7 +201,7 @@ export function HeroSection() {
                     <span className="sm:hidden">Raised for </span>
                     OneProsper&apos;s education projects
                   </p>
-                  <p className="text-base sm:text-xl font-semibold text-primary">$1101 <span className="text-xs sm:text-sm font-normal text-muted-foreground">raised of $5000</span></p>
+                  <p className="text-base sm:text-xl font-semibold text-primary">${Math.round(donationTotal)} <span className="text-xs sm:text-sm font-normal text-muted-foreground">raised of $5000</span></p>
                 </div>
               </div>
             </div>

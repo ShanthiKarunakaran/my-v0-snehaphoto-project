@@ -11,6 +11,7 @@ import { CheckCircle2, AlertCircle, DollarSign, TrendingUp, Sparkles } from "luc
 import { cn } from "@/lib/utils"
 
 export function ContactSection() {
+  const [donationTotal, setDonationTotal] = useState<number>(1101) // Default fallback
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,6 +29,22 @@ export function ContactSection() {
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hasAppliedPrefillRef = useRef(false)
   const formStartTimeRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const fetchDonationTotal = async () => {
+      try {
+        const response = await fetch("/api/donations?total=true")
+        const data = await response.json()
+        if (response.ok && typeof data.total === "number") {
+          setDonationTotal(data.total)
+        }
+      } catch (error) {
+        console.error("Failed to fetch donation total:", error)
+        // Keep default value on error
+      }
+    }
+    fetchDonationTotal()
+  }, [])
 
   // Track when form becomes visible/interactive
   useEffect(() => {
@@ -508,7 +525,7 @@ export function ContactSection() {
                     </div>
                     <TrendingUp className="h-4 w-4 text-primary/70" />
                   </div>
-                  <p className="text-4xl font-bold text-primary mb-1">$1101 <span className="text-lg font-normal text-muted-foreground">raised of $5000</span></p>
+                  <p className="text-4xl font-bold text-primary mb-1">${Math.round(donationTotal)} <span className="text-lg font-normal text-muted-foreground">raised of $5000</span></p>
                   <p className="text-xs text-muted-foreground">Supporting OneProsper&apos;s education programs</p>
                 </div>
 
