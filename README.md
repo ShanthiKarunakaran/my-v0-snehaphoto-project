@@ -19,26 +19,41 @@ A modern, responsive photography Web App built with Next.js, showcasing professi
 ## Tech Stack
 
 ### Core Framework
-- **Next.js 15.5.4** - React-based full-stack framework
+- **Next.js 16** (App Router) - React-based full-stack framework
 - **React 19.1.0** - UI library
 - **TypeScript 5** - Type-safe development
 
+### Backend & Data
+- **Supabase** (@supabase/supabase-js) - Database (PostgreSQL) and storage
+- **Resend** - Email service for contact form
+
 ### Styling & UI
 - **Tailwind CSS 4.1.9** - Utility-first CSS framework
-- **shadcn/ui** - Modern component library
-- **Radix UI** - Accessible headless UI primitives
-- **Framer Motion** - Smooth animations
-- **Lucide React** - Beautiful icon library
+- **shadcn/ui** - Component library (built on Radix UI)
+- **Radix UI** - Accessible headless UI primitives (accordion, dialog, tabs, etc.)
+- **Framer Motion** - Animations
+- **Lucide React** - Icons
+- **react-icons** - Additional icons
+- **tailwind-merge**, **class-variance-authority**, **clsx** - Styling utilities
 
 ### Form & Validation
-- **React Hook Form** - Efficient form handling
-- **Zod** - Type-safe schema validation
-- **Resend** - Email service integration
+- **React Hook Form** - Form state and handling
+- **@hookform/resolvers** - Form validation integration
+- **Zod** - Schema validation
+
+### Other Libraries
+- **next-themes** - Dark/light theme
+- **date-fns** - Date formatting
+- **embla-carousel-react** - Carousels
+- **sharp** - Image processing (server-side)
+- **sonner** - Toast notifications
+- **geist** - Font
 
 ### Development Tools
-- **ESLint** - Code linting and formatting
+- **ESLint** - Linting
 - **PostCSS** - CSS processing
-- **Vercel Analytics** - Performance monitoring
+- **Husky** - Git hooks
+- **lint-staged** - Pre-commit linting
 
 ## Project Structure
 
