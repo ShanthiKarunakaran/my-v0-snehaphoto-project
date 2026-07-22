@@ -38,8 +38,8 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Portrait Client",
     quote:
       "During the shoot, Sneha was responsive and accommodating to my requests. It’s clear that she cares about how the client feels and how the photos are composed.",
-    avatarSrc: "https://kwtcwppjyvlbnkxjawax.supabase.co/storage/v1/object/public/images/photos/1784757205493-gt4t0k.jpeg",
-    imageSrc: "https://kwtcwppjyvlbnkxjawax.supabase.co/storage/v1/object/public/images/photos/1784757205493-gt4t0k.jpeg",
+    avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
+    imageSrc: "/photos/Portraits/HK.jpeg",
   },
 ]
 
