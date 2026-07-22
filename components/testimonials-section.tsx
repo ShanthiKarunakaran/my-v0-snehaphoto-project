@@ -32,7 +32,14 @@ const TESTIMONIALS: Testimonial[] = [
       "Sneha takes absolute pride in her work. She comes to a shoot with a detailed list of shots, she gives clear and concise directions, and creates beautiful and thoughtful images.",
     avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
     imageSrc: "/photos/Portraits/portrait-Bookstore.jpg",
-  }
+  },
+  {
+    name: "Khoi Hoang",
+    role: "Portrait Client",
+    quote:
+      "During the shoot, Sneha was responsive and accommodating to my requests. It’s clear that she cares about how the client feels and how the photos are composed.",
+    avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
+  },
 ]
 
 export function TestimonialsSection() {
