@@ -6,6 +6,8 @@ type Testimonial = {
   quote: string
   avatarSrc: string
   imageSrc?: string
+  /** CSS object-position so faces stay visible in the small oval crop */
+  objectPosition?: string
 }
 
 const TESTIMONIALS: Testimonial[] = [
@@ -16,6 +18,7 @@ const TESTIMONIALS: Testimonial[] = [
       "Having my senior pics taken by Sneha was so much fun! We took them at the beach and in a little beach town and they came out so good! I liked her vision for the photos and how she was my hype woman during each pose. Sneha is a very talented and supportive photographer!",
     avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
     imageSrc: "/photos/GraduationPhotos/GradPics-ocean.jpg",
+    objectPosition: "center",
   },
   {
     name: "Thien Hong",
@@ -24,6 +27,7 @@ const TESTIMONIALS: Testimonial[] = [
       "The photoshoot is one of my best experiences to date! Sneha really listened and incorporated my ideas into the photoshoot. She is so open to all concepts, and works very hard to fully research the concepts. Me and my friend opted for a k-pop style photoshoot, and Sneha executed what we had envisioned so well. I will definitely do this again. I can't state how amazing the experience truly was.",
     avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
     imageSrc: "/photos/Portraits/tying-shoes.jpg",
+    objectPosition: "center top",
   },
   {
     name: "Ms. Hughes",
@@ -32,14 +36,17 @@ const TESTIMONIALS: Testimonial[] = [
       "Sneha takes absolute pride in her work. She comes to a shoot with a detailed list of shots, she gives clear and concise directions, and creates beautiful and thoughtful images.",
     avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
     imageSrc: "/photos/Portraits/portrait-Bookstore.jpg",
+    objectPosition: "center 25%",
   },
   {
-    name: "Khoi Hoang",
+    name: "HT",
     role: "Portrait Client",
     quote:
       "During the shoot, Sneha was responsive and accommodating to my requests. It’s clear that she cares about how the client feels and how the photos are composed.",
     avatarSrc: "/photos/aboutMe/sneha-silhouette.png",
     imageSrc: "/photos/Portraits/HK.jpeg",
+    // Face sits high in this waist-up shot; bias crop toward the top
+    objectPosition: "center 18%",
   },
 ]
 
@@ -65,17 +72,12 @@ export function TestimonialsSection() {
               <div className="flex items-center gap-4 mb-4">
                 {t.imageSrc ? (
                   <div className="relative w-20 h-16 rounded-[50%] overflow-hidden ring-2 ring-primary/30 flex-shrink-0">
-                    <Image 
-                      src={t.imageSrc} 
-                      alt={t.name} 
-                      fill 
-                      className={`object-cover ${
-                        t.name === "Thien Hong" 
-                          ? "object-[center_top]" 
-                          : t.name === "Ms. Hughes"
-                          ? "object-[center_25%]"
-                          : "object-center"
-                      }`}
+                    <Image
+                      src={t.imageSrc}
+                      alt={t.name}
+                      fill
+                      className="object-cover"
+                      style={{ objectPosition: t.objectPosition ?? "center" }}
                     />
                   </div>
                 ) : (
@@ -104,5 +106,3 @@ export function TestimonialsSection() {
     </section>
   )
 }
-
-
