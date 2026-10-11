@@ -92,7 +92,7 @@ export function Footer() {
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
               <span>© {new Date().getFullYear()}</span>
               <span className="hidden sm:inline">—</span>
-              <span>Copyright © Shanthi Karunakaran</span>
+              <span>Copyright © Sneha Arun</span>
               <span className="hidden sm:inline">—</span>
               <span className="hidden sm:inline">All rights reserved.</span>
               <Heart className="h-4 w-4 text-primary fill-primary" />
